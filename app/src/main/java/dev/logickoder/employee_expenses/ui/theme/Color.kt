@@ -8,4 +8,6 @@ internal val ColorScheme = lightColors(
     primaryVariant = Color(0xFF3700B3),
     secondary = Color(0xFF03DAC5),
     onSecondary = Color(0xD9E8FCB3),
+    background = Color(0xFF233348),
+    onBackground = Color.White,
 )

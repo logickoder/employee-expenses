@@ -2,7 +2,9 @@ package dev.logickoder.employee_expenses.ui.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -11,6 +13,7 @@ import dev.logickoder.employee_expenses.R
 @Composable
 fun LoginForm(
     modifier: Modifier = Modifier,
+    loginState: LoginState,
 ) {
     val padding = dimensionResource(id = R.dimen.padding)
     Column(
@@ -19,21 +22,21 @@ fun LoginForm(
             padding - padding / 4, Alignment.CenterVertically
         ),
         content = {
-            var username by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
+            val username by loginState.username.collectAsState(initial = "")
+            val password by loginState.password.collectAsState(initial = "")
 
             LoginInput(
                 text = R.string.username,
                 value = username,
                 onValueChanged = { name ->
-                    username = name.replace(Regex("\\s+"), "")
+                    loginState.updateUsername(name)
                 }
             )
             LoginInput(
                 text = R.string.password,
                 value = password,
                 onValueChanged = { value ->
-                    password = value
+                    loginState.updatePassword(value)
                 },
                 type = LoginInputType.Password,
             )

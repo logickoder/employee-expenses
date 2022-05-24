@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Employee Expenses</string>
+    <string name="app_name">Expense Manager</string>
 
     <string name="login">Login</string>
     <string name="username">Username</string>
