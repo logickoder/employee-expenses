@@ -1,16 +1,17 @@
 package dev.logickoder.employee_expenses.ui.screens.login
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PanoramaFishEye
+import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -49,28 +50,34 @@ fun LoginInput(
             )
 
             val password = type == LoginInputType.Password
-            TextField(
+            BasicTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = value,
                 onValueChange = onValueChanged,
-                textStyle = Theme.typography.body1,
-                shape = Theme.shapes.medium,
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = Color.White.copy(alpha = 0.8f),
-                    backgroundColor = Theme.colors.primary.copy(alpha = 0.14f)
+                textStyle = Theme.typography.body1.copy(
+                    color = Color.White.copy(alpha = 0.8f),
                 ),
-                trailingIcon = if (password) {
-                    {
-                        Icon(
-                            imageVector = Icons.Outlined.PanoramaFishEye,
-                            contentDescription = null
-                        )
-                    }
-                } else null,
                 visualTransformation = if (password) {
                     PasswordVisualTransformation()
                 } else VisualTransformation.None,
-                interactionSource = interactionSource
+                interactionSource = interactionSource,
+                decorationBox = { textField ->
+                    Row(
+                        modifier = Modifier.background(
+                            color = Theme.colors.primary.copy(alpha = 0.14f),
+                            shape = Theme.shapes.medium,
+                        ),
+                        content = {
+                            textField()
+                            if (password) {
+                                Icon(
+                                    imageVector = Icons.Outlined.RemoveRedEye,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    )
+                }
             )
         }
     )
