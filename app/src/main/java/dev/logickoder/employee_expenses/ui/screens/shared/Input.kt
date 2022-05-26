@@ -21,6 +21,20 @@ import androidx.compose.ui.text.input.VisualTransformation
 import dev.logickoder.employee_expenses.R
 import dev.logickoder.employee_expenses.ui.theme.Theme
 
+@Composable
+fun InputTitle(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Theme.colors.onSecondary,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = Theme.typography.body2.copy(fontWeight = FontWeight.Medium),
+        color = color,
+    )
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun InputField(
@@ -83,9 +97,8 @@ fun Input(
         content = {
             val interactionSource = remember { MutableInteractionSource() }
             val hovering by interactionSource.collectIsFocusedAsState()
-            Text(
+            InputTitle(
                 text = title,
-                style = Theme.typography.body2.copy(fontWeight = FontWeight.Medium),
                 color = if (!hovering) {
                     Theme.colors.onSecondary
                 } else Theme.colors.primary.copy(alpha = 0.8f),
