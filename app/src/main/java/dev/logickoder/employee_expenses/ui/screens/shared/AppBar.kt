@@ -1,32 +1,48 @@
 package dev.logickoder.employee_expenses.ui.screens.shared
 
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
-import dev.logickoder.employee_expenses.R
+import androidx.compose.ui.unit.dp
 import dev.logickoder.employee_expenses.ui.theme.Theme
 
 @Composable
 fun AppBar(
+    title: String,
+    actions: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
-    contentPadding: Dp = dimensionResource(id = R.dimen.padding)
+    navigateBack: (() -> Unit)? = null,
 ) {
     TopAppBar(
         modifier = modifier,
+        navigationIcon = navigateBack?.let { goBack ->
+            {
+                IconButton(
+                    onClick = goBack,
+                    content = {
+                        Icon(
+                            imageVector = Icons.Outlined.ArrowBack,
+                            contentDescription = null,
+                        )
+                    }
+                )
+            }
+        },
         title = {
             Text(
-                text = stringResource(id = R.string.app_name),
+                text = title,
                 color = Theme.colors.onBackground,
             )
         },
         actions = {
-            AppBarButton(text = stringResource(id = R.string.info))
-            AppBarButton(text = stringResource(id = R.string.logout))
+            actions()
+            Spacer(modifier = Modifier.width(12.dp))
         },
         backgroundColor = Theme.colors.background,
     )
@@ -36,10 +52,15 @@ fun AppBar(
 fun AppBarButton(
     text: String,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
-    Button(
+    TextButton(
         modifier = modifier,
-        onClick = {},
+        onClick = onClick,
+        colors = ButtonDefaults.textButtonColors(
+            backgroundColor = Theme.colors.primary.copy(alpha = 0.4f),
+        ),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
         content = {
             Text(
                 text = text.uppercase()

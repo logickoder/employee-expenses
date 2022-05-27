@@ -1,8 +1,7 @@
 package dev.logickoder.employee_expenses.ui.screens.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -12,8 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import dev.logickoder.employee_expenses.R
 import dev.logickoder.employee_expenses.ui.screens.shared.Input
 import dev.logickoder.employee_expenses.ui.theme.secondaryPadding
@@ -25,6 +22,7 @@ class HomeFilterFormState {
     var to by mutableStateOf<LocalDate?>(null)
     var min by mutableStateOf<Double?>(null)
     var max by mutableStateOf<Double?>(null)
+    var hidden by mutableStateOf(false)
 }
 
 @Composable
@@ -38,69 +36,66 @@ fun HomeFilterForm(
     modifier: Modifier = Modifier,
     sectionSpacing: Dp = secondaryPadding()
 ) = with(state) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(sectionSpacing, Alignment.CenterVertically),
+    Box(
+        modifier = modifier.animateContentSize(),
         content = {
-            val calendarIcon: Pair<Alignment.Horizontal, @Composable () -> Unit> =
-                Alignment.End to {
-                    Icon(
-                        imageVector = Icons.Outlined.CalendarMonth,
-                        contentDescription = null
-                    )
-                }
-            Input(
-                title = stringResource(id = R.string.from),
-                value = from?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
-                onValueChanged = {},
-                icon = calendarIcon
-            )
-            Input(
-                title = stringResource(id = R.string.to),
-                value = to?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
-                onValueChanged = {},
-                icon = calendarIcon,
-            )
-            ConstraintLayout(
-                modifier = Modifier.fillMaxWidth(),
+            if (!hidden) Column(
+                verticalArrangement = Arrangement.spacedBy(
+                    sectionSpacing,
+                    Alignment.CenterVertically
+                ),
                 content = {
-                    val (left, middle, right) = createRefs()
-                    val textIcon: Pair<Alignment.Horizontal, @Composable () -> Unit> =
+                    val calendarIcon: Pair<Alignment.Horizontal, @Composable () -> Unit> =
                         Alignment.End to {
-                            Text("$")
+                            Icon(
+                                imageVector = Icons.Outlined.CalendarMonth,
+                                contentDescription = null
+                            )
                         }
-                    Text(
-                        text = "-",
-                        modifier = Modifier.constrainAs(middle) {
-                            val padding = sectionSpacing / 2
-                            linkTo(parent.start, parent.end, padding, padding)
-                        }
+                    Input(
+                        title = stringResource(id = R.string.from),
+                        value = from?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
+                        onValueChanged = {},
+                        icon = calendarIcon
                     )
                     Input(
-                        modifier = Modifier.constrainAs(left) {
-                            linkTo(parent.start, middle.start)
-                            width = Dimension.fillToConstraints
-                        },
-                        title = stringResource(id = R.string.min),
-                        value = if (min == null) "" else min.toString(),
-                        onValueChanged = {
-                            min = it.toDoubleOrNull()
-                        }
+                        title = stringResource(id = R.string.to),
+                        value = to?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
+                        onValueChanged = {},
+                        icon = calendarIcon,
                     )
-                    Input(
-                        modifier = Modifier.constrainAs(right) {
-                            linkTo(middle.end, parent.end)
-                            width = Dimension.fillToConstraints
-                        },
-                        title = stringResource(id = R.string.max),
-                        value = if (max == null) "" else max.toString(),
-                        onValueChanged = {
-                            max = it.toDoubleOrNull()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        content = {
+                            val textIcon: Pair<Alignment.Horizontal, @Composable () -> Unit> =
+                                Alignment.Start to {
+                                    Text("$")
+                                }
+                            Input(
+                                modifier = Modifier.weight(0.45f),
+                                title = stringResource(id = R.string.min),
+                                value = if (min == null) "" else min.toString(),
+                                onValueChanged = {
+                                    min = it.toDoubleOrNull()
+                                },
+                                icon = textIcon,
+                            )
+                            Text('\u2014'.toString())
+                            Input(
+                                modifier = Modifier.weight(0.45f),
+                                title = stringResource(id = R.string.max),
+                                value = if (max == null) "" else max.toString(),
+                                onValueChanged = {
+                                    max = it.toDoubleOrNull()
+                                },
+                                icon = textIcon,
+                            )
                         }
                     )
                 }
             )
-//            Input(title = , value = , onValueChanged = )
         }
     )
 }

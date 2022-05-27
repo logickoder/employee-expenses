@@ -15,4 +15,10 @@
     <string name="to">To</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
+
+    <string name="profile">Profile</string>
+    <string name="name">Name</string>
+    <string name="job_description">Job Description</string>
+    <string name="department">Department</string>
+    <string name="location">Location</string>
 </resources>

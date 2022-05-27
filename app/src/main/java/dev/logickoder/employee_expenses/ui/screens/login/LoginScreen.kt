@@ -8,7 +8,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
@@ -53,7 +52,7 @@ fun LoginScreen(
                 color = Theme.colors.primary.copy(alpha = 0.5f)
             )
             LoginForm(
-                loginState = rememberLoginState(scope = rememberCoroutineScope())
+                loginState = rememberLoginState()
             )
             Button(
                 onClick = navigateToHomeScreen,
