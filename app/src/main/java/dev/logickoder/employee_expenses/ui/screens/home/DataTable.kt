@@ -24,9 +24,16 @@ fun DataTable(
     modifier: Modifier = Modifier,
     state: DataTableState = rememberDataTableState(),
 ) {
-    val data = listOf(
-        "Date", "Merchant", "Total", "Status", "Comment"
-    )
+    val header = remember {
+        listOf(
+            "Date", "Merchant", "Total", "Status", "Comment"
+        )
+    }
+    val data = remember {
+        (1..100).map {
+            header
+        }
+    }
 
     @Composable
     fun Text(text: String) {
@@ -36,6 +43,14 @@ fun DataTable(
         )
     }
 
+//    LazyVerticalGrid(
+//        modifier = modifier,
+//        cells = GridCells.Fixed(data.size),
+//        content = {
+//
+//        }
+//    )
+
     LazyColumn(
         modifier = modifier,
         content = {
@@ -43,26 +58,24 @@ fun DataTable(
                 DataRow(
                     tableState = state,
                     content = {
-                        items(data) { string ->
+                        items(header) { string ->
                             Text(string)
                         }
                     }
                 )
             }
-            for (i in 1..100) {
-                item {
-                    DataRow(
-                        tableState = state,
-                        content = {
-                            stickyHeader {
-                                Text(data.first())
-                            }
-                            items(data) { string ->
-                                Text(string)
-                            }
+            items(data) { row ->
+                DataRow(
+                    tableState = state,
+                    content = {
+                        stickyHeader {
+                            Text(row.first())
                         }
-                    )
-                }
+                        items(row) { string ->
+                            Text(string)
+                        }
+                    }
+                )
             }
         },
     )

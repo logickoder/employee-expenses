@@ -2,10 +2,10 @@ package dev.logickoder.employee_expenses.ui.screens.home
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.AttachMoney
+import androidx.compose.material.icons.outlined.CalendarViewMonth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,13 +45,7 @@ fun HomeFilterForm(
                     Alignment.CenterVertically
                 ),
                 content = {
-                    val calendarIcon: Pair<Alignment.Horizontal, @Composable () -> Unit> =
-                        Alignment.End to {
-                            Icon(
-                                imageVector = Icons.Outlined.CalendarMonth,
-                                contentDescription = null
-                            )
-                        }
+                    val calendarIcon = Alignment.End to Icons.Outlined.CalendarViewMonth
                     Input(
                         title = stringResource(id = R.string.from),
                         value = from?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
@@ -61,7 +55,9 @@ fun HomeFilterForm(
                     Input(
                         title = stringResource(id = R.string.to),
                         value = to?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
-                        onValueChanged = {},
+                        onValueChanged = {
+
+                        },
                         icon = calendarIcon,
                     )
                     Row(
@@ -69,10 +65,7 @@ fun HomeFilterForm(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         content = {
-                            val textIcon: Pair<Alignment.Horizontal, @Composable () -> Unit> =
-                                Alignment.Start to {
-                                    Text("$")
-                                }
+                            val textIcon = Alignment.Start to Icons.Outlined.AttachMoney
                             Input(
                                 modifier = Modifier.weight(0.45f),
                                 title = stringResource(id = R.string.min),

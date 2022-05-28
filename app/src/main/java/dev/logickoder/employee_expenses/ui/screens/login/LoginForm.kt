@@ -2,7 +2,6 @@ package dev.logickoder.employee_expenses.ui.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.runtime.Composable
@@ -30,7 +29,7 @@ fun LoginForm(
             Input(
                 title = stringResource(id = R.string.username),
                 value = username,
-                titleColor = Color.White,
+                color = Color.White,
                 onValueChanged = { name ->
                     username = name
                 }
@@ -38,17 +37,12 @@ fun LoginForm(
             Input(
                 title = stringResource(id = R.string.password),
                 value = password,
-                titleColor = Color.White,
+                color = Color.White,
                 onValueChanged = { value ->
                     password = value
                 },
                 visualTransformation = PasswordVisualTransformation(),
-                icon = Alignment.End to {
-                    Icon(
-                        imageVector = Icons.Outlined.RemoveRedEye,
-                        contentDescription = null
-                    )
-                }
+                icon = Alignment.End to Icons.Outlined.RemoveRedEye,
             )
         }
     )
