@@ -43,14 +43,6 @@ fun DataTable(
         )
     }
 
-//    LazyVerticalGrid(
-//        modifier = modifier,
-//        cells = GridCells.Fixed(data.size),
-//        content = {
-//
-//        }
-//    )
-
     LazyColumn(
         modifier = modifier,
         content = {

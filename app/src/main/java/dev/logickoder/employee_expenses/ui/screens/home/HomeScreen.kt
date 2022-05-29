@@ -1,27 +1,25 @@
 package dev.logickoder.employee_expenses.ui.screens.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.logickoder.employee_expenses.R
 import dev.logickoder.employee_expenses.ui.screens.shared.AppBar
 import dev.logickoder.employee_expenses.ui.screens.shared.AppBarButton
+import dev.logickoder.employee_expenses.ui.screens.shared.AppBarIconButton
 import dev.logickoder.employee_expenses.ui.theme.Theme
 
 @Composable
@@ -46,19 +44,13 @@ fun HomeScreen(
 
                             }
                         )
-                        AppBarButton(
-                            text = stringResource(id = R.string.logout),
-                            onClick = logout
+                        AppBarIconButton(
+                            icon = Icons.Outlined.Person,
+                            onClick = navigateToProfileScreen
                         )
-                        Icon(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .clip(CircleShape)
-                                .clickable {
-                                    navigateToProfileScreen()
-                                },
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = stringResource(id = R.string.profile),
+                        AppBarIconButton(
+                            icon = Icons.Outlined.Logout,
+                            onClick = logout
                         )
                     }
                 )

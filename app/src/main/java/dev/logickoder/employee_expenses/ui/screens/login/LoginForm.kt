@@ -12,7 +12,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import dev.logickoder.employee_expenses.R
-import dev.logickoder.employee_expenses.ui.screens.shared.Input
+import dev.logickoder.employee_expenses.ui.screens.shared.InputWithField
 
 @Composable
 fun LoginForm(
@@ -26,7 +26,7 @@ fun LoginForm(
             padding - padding / 4, Alignment.CenterVertically
         ),
         content = {
-            Input(
+            InputWithField(
                 title = stringResource(id = R.string.username),
                 value = username,
                 color = Color.White,
@@ -34,7 +34,7 @@ fun LoginForm(
                     username = name
                 }
             )
-            Input(
+            InputWithField(
                 title = stringResource(id = R.string.password),
                 value = password,
                 color = Color.White,
