@@ -27,11 +27,6 @@ class HomeFilterFormState {
 }
 
 @Composable
-fun rememberHomeFilterFormState() = remember {
-    HomeFilterFormState()
-}
-
-@Composable
 fun HomeFilterForm(
     state: HomeFilterFormState,
     modifier: Modifier = Modifier,

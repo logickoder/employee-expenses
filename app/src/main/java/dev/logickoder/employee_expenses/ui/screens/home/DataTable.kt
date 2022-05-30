@@ -13,16 +13,11 @@ class DataTableState {
     var firstVisibleItemScrollOffset by mutableStateOf(0)
 }
 
-@Composable
-fun rememberDataTableState() = remember {
-    DataTableState()
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DataTable(
     modifier: Modifier = Modifier,
-    state: DataTableState = rememberDataTableState(),
+    state: DataTableState,
 ) {
     val header = remember {
         listOf(

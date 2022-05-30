@@ -2,11 +2,13 @@ package dev.logickoder.employee_expenses.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import dev.logickoder.employee_expenses.MainViewModel
 import dev.logickoder.employee_expenses.ui.screens.home.HomeScreen
 import dev.logickoder.employee_expenses.ui.screens.login.LoginScreen
 import dev.logickoder.employee_expenses.ui.screens.profile.ProfileScreen
@@ -24,6 +26,7 @@ sealed class Navigation(
 fun NavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    viewModel: MainViewModel = viewModel(),
 ) {
     NavHost(
         navController = navController,

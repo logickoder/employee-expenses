@@ -53,7 +53,7 @@ fun InputField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
-    val padding = secondaryPadding() / 2
+    val padding = 2.dp
     BasicTextField(
         modifier = modifier.background(
             color = color.copy(alpha = 0.1f),

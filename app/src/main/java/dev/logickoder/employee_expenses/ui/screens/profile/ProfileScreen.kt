@@ -1,6 +1,7 @@
 package dev.logickoder.employee_expenses.ui.screens.profile
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import coil.compose.rememberAsyncImagePainter
 import dev.logickoder.employee_expenses.R
 import dev.logickoder.employee_expenses.ui.screens.shared.AppBar
 import dev.logickoder.employee_expenses.ui.screens.shared.AppBarIconButton
@@ -72,24 +74,18 @@ fun ProfileScreen(
                             }
                             .clipToBounds(),
                         content = {
-                            val imageModifier = Modifier
-                                .size(maxWidth / 3)
-                                .clip(CircleShape)
-                            if (avatar == null) {
-                                Icon(
-                                    modifier = imageModifier,
-                                    imageVector = Icons.Outlined.Person,
-                                    contentDescription = stringResource(id = R.string.profile),
-                                    tint = Color.Black,
-                                )
-                            } else {
-                                Image(
-                                    modifier = imageModifier,
-                                    painter = rememberAsyncImagePainter(photo.uri),
-                                    contentScale = ContentScale.Crop,
-                                    contentDescription = null
-                                )
-                            }
+                            Image(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .size(maxWidth / 3)
+                                    .background(Color.LightGray),
+                                painter = rememberAsyncImagePainter(
+                                    model = avatar,
+                                    error = rememberVectorPainter(Icons.Outlined.Person),
+                                ),
+                                contentScale = ContentScale.Crop,
+                                contentDescription = stringResource(id = R.string.profile)
+                            )
                             Icon(
                                 modifier = Modifier.align(Alignment.BottomEnd),
                                 imageVector = Icons.Outlined.Edit,

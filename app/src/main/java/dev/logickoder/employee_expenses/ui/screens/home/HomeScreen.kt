@@ -25,6 +25,7 @@ import dev.logickoder.employee_expenses.ui.theme.Theme
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    state: HomeState,
     navigateToProfileScreen: () -> Unit,
     logout: () -> Unit,
 ) {
@@ -68,7 +69,10 @@ fun HomeScreen(
                 modifier = modifier.padding(it),
                 elevation = 4.dp,
                 content = {
-                    DataTable(modifier = Modifier.fillMaxWidth())
+                    DataTable(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = state.tableState,
+                    )
                 }
             )
         },
