@@ -1,5 +1,6 @@
 package dev.logickoder.employee_expenses.ui.screens.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import dev.logickoder.employee_expenses.R
@@ -31,6 +34,10 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     sectionSpacing: Dp = secondaryPadding(),
 ) = with(profileState) {
+
+    if (showGallery) {
+        SelectAvatar()
+    }
 
     Scaffold(
         modifier = modifier,
@@ -65,14 +72,24 @@ fun ProfileScreen(
                             }
                             .clipToBounds(),
                         content = {
-                            Icon(
-                                modifier = Modifier
-                                    .size(maxWidth / 3)
-                                    .clip(CircleShape),
-                                imageVector = Icons.Outlined.Person,
-                                contentDescription = stringResource(id = R.string.profile),
-                                tint = Color.Black,
-                            )
+                            val imageModifier = Modifier
+                                .size(maxWidth / 3)
+                                .clip(CircleShape)
+                            if (avatar == null) {
+                                Icon(
+                                    modifier = imageModifier,
+                                    imageVector = Icons.Outlined.Person,
+                                    contentDescription = stringResource(id = R.string.profile),
+                                    tint = Color.Black,
+                                )
+                            } else {
+                                Image(
+                                    modifier = imageModifier,
+                                    painter = rememberAsyncImagePainter(photo.uri),
+                                    contentScale = ContentScale.Crop,
+                                    contentDescription = null
+                                )
+                            }
                             Icon(
                                 modifier = Modifier.align(Alignment.BottomEnd),
                                 imageVector = Icons.Outlined.Edit,

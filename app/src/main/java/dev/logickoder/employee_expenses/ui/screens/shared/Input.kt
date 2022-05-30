@@ -53,11 +53,12 @@ fun InputField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
+    val padding = secondaryPadding() / 2
     BasicTextField(
         modifier = modifier.background(
             color = color.copy(alpha = 0.1f),
             shape = Theme.shapes.medium,
-        ),
+        ).padding(padding),
         value = value,
         onValueChange = onValueChanged,
         textStyle = Theme.typography.body1.copy(
@@ -69,8 +70,6 @@ fun InputField(
         interactionSource = interactionSource,
         keyboardOptions = keyboardOptions,
         decorationBox = { innerTextField ->
-            val padding = secondaryPadding() / 2
-
             TextFieldDefaults.TextFieldDecorationBox(
                 value = value,
                 enabled = enabled,
@@ -107,7 +106,6 @@ fun InputField(
                         }
                     )
                 },
-                contentPadding = PaddingValues(padding),
                 interactionSource = interactionSource,
             )
         }
