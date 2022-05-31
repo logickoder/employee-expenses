@@ -16,9 +16,9 @@ import dev.logickoder.employee_expenses.R
 @Composable
 fun HomeHeader(
     reimbursed: Float,
+    filterFormState: HomeFilterFormState,
     modifier: Modifier = Modifier
 ) {
-    val filterFormState = rememberHomeFilterFormState()
     Column(
         modifier = modifier,
         content = {

@@ -1,11 +1,14 @@
 package dev.logickoder.employee_expenses.ui.screens.profile
 
 import android.net.Uri
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import dev.logickoder.employee_expenses.ui.screens.shared.ImageSelect
 
 class ProfileState(
-    val navigateToHomeScreen: () -> Unit,
+    val goBack: () -> Unit,
     val logout: () -> Unit,
 ) {
     var name by mutableStateOf("")
@@ -27,12 +30,4 @@ class ProfileState(
             }
         )
     }
-}
-
-@Composable
-fun rememberProfileState(
-    navigateToHomeScreen: () -> Unit,
-    logout: () -> Unit,
-) = remember {
-    ProfileState(navigateToHomeScreen, logout)
 }

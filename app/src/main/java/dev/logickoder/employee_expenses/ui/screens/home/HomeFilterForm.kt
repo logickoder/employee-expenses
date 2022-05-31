@@ -6,7 +6,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AttachMoney
 import androidx.compose.material.icons.outlined.CalendarViewMonth
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,6 +22,15 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class HomeFilterFormState {
+    private val dateFormatter = DateTimeFormatter.ofPattern("dd/mm/yyyy")
+
+    internal fun LocalDate?.toText() = this?.format(dateFormatter) ?: ""
+    internal fun String.toDate(): LocalDate = LocalDate.from(dateFormatter.parse(this))
+
+    internal fun String.toAmount() = toDoubleOrNull()
+    internal fun Double?.toText() = this?.toString() ?: ""
+
+
     var from by mutableStateOf<LocalDate?>(null)
     var to by mutableStateOf<LocalDate?>(null)
     var min by mutableStateOf<Double?>(null)
@@ -44,15 +56,17 @@ fun HomeFilterForm(
                     val calendarIcon = Alignment.End to Icons.Outlined.CalendarViewMonth
                     InputWithField(
                         title = stringResource(id = R.string.from),
-                        value = from?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
-                        onValueChanged = {},
+                        value = from.toText(),
+                        onValueChanged = {
+                            from = it.toDate()
+                        },
                         icon = calendarIcon
                     )
                     InputWithField(
                         title = stringResource(id = R.string.to),
-                        value = to?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
+                        value = to.toText(),
                         onValueChanged = {
-
+                            to = it.toDate()
                         },
                         icon = calendarIcon,
                     )
@@ -65,9 +79,9 @@ fun HomeFilterForm(
                             InputWithField(
                                 modifier = Modifier.weight(0.45f),
                                 title = stringResource(id = R.string.min),
-                                value = if (min == null) "" else min.toString(),
+                                value = min.toText(),
                                 onValueChanged = {
-                                    min = it.toDoubleOrNull() ?: min
+                                    min = it.toAmount() ?: min
                                 },
                                 icon = textIcon,
                                 keyboardOptions = KeyboardOptions(
@@ -77,9 +91,9 @@ fun HomeFilterForm(
                             InputWithField(
                                 modifier = Modifier.weight(0.45f),
                                 title = stringResource(id = R.string.max),
-                                value = if (max == null) "" else max.toString(),
+                                value = max.toText(),
                                 onValueChanged = {
-                                    max = it.toDoubleOrNull() ?: max
+                                    max = it.toAmount() ?: max
                                 },
                                 icon = textIcon,
                                 keyboardOptions = KeyboardOptions(

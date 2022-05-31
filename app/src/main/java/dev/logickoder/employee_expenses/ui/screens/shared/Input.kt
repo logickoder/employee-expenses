@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import dev.logickoder.employee_expenses.ui.theme.Theme
 import dev.logickoder.employee_expenses.ui.theme.secondaryPadding
 
@@ -55,10 +56,12 @@ fun InputField(
 ) {
     val padding = 2.dp
     BasicTextField(
-        modifier = modifier.background(
-            color = color.copy(alpha = 0.1f),
-            shape = Theme.shapes.medium,
-        ).padding(padding),
+        modifier = modifier
+            .background(
+                color = color.copy(alpha = 0.1f),
+                shape = Theme.shapes.medium,
+            )
+            .padding(padding),
         value = value,
         onValueChange = onValueChanged,
         textStyle = Theme.typography.body1.copy(

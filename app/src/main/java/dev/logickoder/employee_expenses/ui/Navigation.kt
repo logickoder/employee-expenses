@@ -8,18 +8,20 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navigation
 import dev.logickoder.employee_expenses.MainViewModel
 import dev.logickoder.employee_expenses.ui.screens.home.HomeScreen
 import dev.logickoder.employee_expenses.ui.screens.login.LoginScreen
 import dev.logickoder.employee_expenses.ui.screens.profile.ProfileScreen
-import dev.logickoder.employee_expenses.ui.screens.profile.rememberProfileState
 
 sealed class Navigation(
     val route: String,
 ) {
     object Login : Navigation("/login")
-    object Home : Navigation("/home")
-    object Profile : Navigation("/profile")
+    object Main : Navigation("/") {
+        object Home : Navigation("/home")
+        object Profile : Navigation("/profile")
+    }
 }
 
 @Composable
@@ -33,74 +35,60 @@ fun NavGraph(
         startDestination = Navigation.Login.route,
         modifier = modifier,
         builder = {
-            loginGraph(navController)
-            homeGraph(navController)
-            profileGraph(navController)
+            // initialized the states
+            viewModel.initStates(navController)
+            loginGraph(viewModel)
+            mainGraph(viewModel)
         }
     )
 }
 
-fun NavGraphBuilder.loginGraph(navController: NavHostController) {
+fun NavGraphBuilder.loginGraph(
+    viewModel: MainViewModel,
+) {
     composable(
         route = Navigation.Login.route,
         content = {
-            LoginScreen {
-                navController.navigate(
-                    route = Navigation.Home.route,
-                    builder = {
-                        popUpTo(
-                            route = Navigation.Login.route,
-                            popUpToBuilder = {
-                                inclusive = true
-                            }
-                        )
-                    }
-                )
-            }
-        }
-    )
-}
-
-fun NavGraphBuilder.homeGraph(
-    navController: NavHostController
-) {
-    composable(
-        route = Navigation.Home.route,
-        content = {
-            HomeScreen(
-                navigateToProfileScreen = {
-                    navController.navigate(Navigation.Profile.route)
-                },
-                logout = { logout(navController) }
+            LoginScreen(
+                state = viewModel.loginState,
             )
         }
     )
 }
 
-fun NavGraphBuilder.profileGraph(
-    navController: NavHostController
+fun NavGraphBuilder.mainGraph(
+    viewModel: MainViewModel,
 ) {
-    composable(
-        route = Navigation.Profile.route,
-        content = {
-            ProfileScreen(
-                profileState = rememberProfileState(
-                    navigateToHomeScreen = {
-                        navController.popBackStack()
-                    },
-                    logout = { logout(navController) }
-                )
+    navigation(
+        startDestination = Navigation.Main.Home.route,
+        route = Navigation.Main.route,
+        builder = {
+            composable(
+                route = Navigation.Main.Home.route,
+                content = {
+                    HomeScreen(
+                        state = viewModel.homeState
+                    )
+                }
+            )
+            composable(
+                route = Navigation.Main.Profile.route,
+                content = {
+                    ProfileScreen(
+                        profileState = viewModel.profileState,
+                    )
+                }
             )
         }
     )
 }
 
-private fun logout(navController: NavController) {
+fun logout(navController: NavController) {
     navController.navigate(
         route = Navigation.Login.route,
         builder = {
             popUpTo(
-                route = Navigation.Home.route,
+                route = Navigation.Main.route,
                 popUpToBuilder = {
                     inclusive = true
                 }

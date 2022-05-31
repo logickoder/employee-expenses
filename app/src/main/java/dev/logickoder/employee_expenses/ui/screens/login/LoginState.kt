@@ -1,13 +1,12 @@
 package dev.logickoder.employee_expenses.ui.screens.login
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
-class LoginState {
+class LoginState(
+    val navigateToMainScreen: () -> Unit,
+) {
     var username by mutableStateOf("")
     var password by mutableStateOf("")
-}
-
-@Composable
-fun rememberLoginState(): LoginState {
-    return remember { LoginState() }
 }

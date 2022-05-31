@@ -47,7 +47,7 @@ fun ProfileScreen(
         topBar = {
             AppBar(
                 title = stringResource(id = R.string.app_name),
-                navigateBack = navigateToHomeScreen,
+                navigateBack = goBack,
                 actions = {
                     AppBarIconButton(
                         icon = Icons.Outlined.Logout,

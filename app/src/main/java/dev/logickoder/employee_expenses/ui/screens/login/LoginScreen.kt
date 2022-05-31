@@ -14,7 +14,6 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.logickoder.employee_expenses.R
@@ -23,8 +22,8 @@ import dev.logickoder.employee_expenses.ui.theme.Theme
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    state: LoginState,
     contentPadding: Dp = dimensionResource(id = R.dimen.padding),
-    navigateToHomeScreen: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -52,10 +51,12 @@ fun LoginScreen(
                 color = Theme.colors.primary.copy(alpha = 0.5f)
             )
             LoginForm(
-                loginState = rememberLoginState()
+                loginState = state,
             )
             Button(
-                onClick = navigateToHomeScreen,
+                onClick = {
+                    state.navigateToMainScreen()
+                },
                 content = {
                     Text(
                         text = stringResource(id = R.string.login)
@@ -63,13 +64,5 @@ fun LoginScreen(
                 }
             )
         }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun LoginScreenPreview() {
-    LoginScreen(
-        navigateToHomeScreen = {}
     )
 }

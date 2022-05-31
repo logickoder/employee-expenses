@@ -26,8 +26,6 @@ import dev.logickoder.employee_expenses.ui.theme.Theme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     state: HomeState,
-    navigateToProfileScreen: () -> Unit,
-    logout: () -> Unit,
 ) {
     val horizontalPadding = dimensionResource(id = R.dimen.padding).let { padding ->
         padding - padding / 4
@@ -47,11 +45,15 @@ fun HomeScreen(
                         )
                         AppBarIconButton(
                             icon = Icons.Outlined.Person,
-                            onClick = navigateToProfileScreen
+                            onClick = {
+                                state.navigateToProfileScreen()
+                            }
                         )
                         AppBarIconButton(
                             icon = Icons.Outlined.Logout,
-                            onClick = logout
+                            onClick = {
+                                state.logout()
+                            }
                         )
                     }
                 )
@@ -59,7 +61,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontalPadding),
-                    reimbursed = 1000f,
+                    reimbursed = state.reimbursed,
+                    filterFormState = state.filterState,
                 )
             }
         },
