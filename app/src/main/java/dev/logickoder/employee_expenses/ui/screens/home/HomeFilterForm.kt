@@ -1,35 +1,41 @@
 package dev.logickoder.employee_expenses.ui.screens.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.AttachMoney
+import androidx.compose.material.icons.outlined.CalendarViewMonth
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import dev.logickoder.employee_expenses.R
-import dev.logickoder.employee_expenses.ui.screens.shared.Input
+import dev.logickoder.employee_expenses.ui.screens.shared.InputWithField
 import dev.logickoder.employee_expenses.ui.theme.secondaryPadding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class HomeFilterFormState {
+    private val dateFormatter = DateTimeFormatter.ofPattern("dd/mm/yyyy")
+
+    internal fun LocalDate?.toText() = this?.format(dateFormatter) ?: ""
+    internal fun String.toDate(): LocalDate = LocalDate.from(dateFormatter.parse(this))
+
+    internal fun String.toAmount() = toDoubleOrNull()
+    internal fun Double?.toText() = this?.toString() ?: ""
+
+
     var from by mutableStateOf<LocalDate?>(null)
     var to by mutableStateOf<LocalDate?>(null)
     var min by mutableStateOf<Double?>(null)
     var max by mutableStateOf<Double?>(null)
-}
-
-@Composable
-fun rememberHomeFilterFormState() = remember {
-    HomeFilterFormState()
+    var hidden by mutableStateOf(false)
 }
 
 @Composable
@@ -38,69 +44,66 @@ fun HomeFilterForm(
     modifier: Modifier = Modifier,
     sectionSpacing: Dp = secondaryPadding()
 ) = with(state) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(sectionSpacing, Alignment.CenterVertically),
+    Box(
+        modifier = modifier.animateContentSize(),
         content = {
-            val calendarIcon: Pair<Alignment.Horizontal, @Composable () -> Unit> =
-                Alignment.End to {
-                    Icon(
-                        imageVector = Icons.Outlined.CalendarMonth,
-                        contentDescription = null
-                    )
-                }
-            Input(
-                title = stringResource(id = R.string.from),
-                value = from?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
-                onValueChanged = {},
-                icon = calendarIcon
-            )
-            Input(
-                title = stringResource(id = R.string.to),
-                value = to?.format(DateTimeFormatter.ISO_OFFSET_DATE) ?: "",
-                onValueChanged = {},
-                icon = calendarIcon,
-            )
-            ConstraintLayout(
-                modifier = Modifier.fillMaxWidth(),
+            if (!hidden) Column(
+                verticalArrangement = Arrangement.spacedBy(
+                    sectionSpacing,
+                    Alignment.CenterVertically
+                ),
                 content = {
-                    val (left, middle, right) = createRefs()
-                    val textIcon: Pair<Alignment.Horizontal, @Composable () -> Unit> =
-                        Alignment.End to {
-                            Text("$")
-                        }
-                    Text(
-                        text = "-",
-                        modifier = Modifier.constrainAs(middle) {
-                            val padding = sectionSpacing / 2
-                            linkTo(parent.start, parent.end, padding, padding)
-                        }
-                    )
-                    Input(
-                        modifier = Modifier.constrainAs(left) {
-                            linkTo(parent.start, middle.start)
-                            width = Dimension.fillToConstraints
-                        },
-                        title = stringResource(id = R.string.min),
-                        value = if (min == null) "" else min.toString(),
+                    val calendarIcon = Alignment.End to Icons.Outlined.CalendarViewMonth
+                    InputWithField(
+                        title = stringResource(id = R.string.from),
+                        value = from.toText(),
                         onValueChanged = {
-                            min = it.toDoubleOrNull()
-                        }
-                    )
-                    Input(
-                        modifier = Modifier.constrainAs(right) {
-                            linkTo(middle.end, parent.end)
-                            width = Dimension.fillToConstraints
+                            from = it.toDate()
                         },
-                        title = stringResource(id = R.string.max),
-                        value = if (max == null) "" else max.toString(),
+                        icon = calendarIcon
+                    )
+                    InputWithField(
+                        title = stringResource(id = R.string.to),
+                        value = to.toText(),
                         onValueChanged = {
-                            max = it.toDoubleOrNull()
+                            to = it.toDate()
+                        },
+                        icon = calendarIcon,
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(secondaryPadding()),
+                        content = {
+                            val textIcon = Alignment.Start to Icons.Outlined.AttachMoney
+                            InputWithField(
+                                modifier = Modifier.weight(0.45f),
+                                title = stringResource(id = R.string.min),
+                                value = min.toText(),
+                                onValueChanged = {
+                                    min = it.toAmount() ?: min
+                                },
+                                icon = textIcon,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                ),
+                            )
+                            InputWithField(
+                                modifier = Modifier.weight(0.45f),
+                                title = stringResource(id = R.string.max),
+                                value = max.toText(),
+                                onValueChanged = {
+                                    max = it.toAmount() ?: max
+                                },
+                                icon = textIcon,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                ),
+                            )
                         }
                     )
                 }
             )
-//            Input(title = , value = , onValueChanged = )
         }
     )
 }
