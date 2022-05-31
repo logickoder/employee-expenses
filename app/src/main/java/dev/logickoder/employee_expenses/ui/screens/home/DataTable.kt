@@ -1,32 +1,34 @@
 package dev.logickoder.employee_expenses.ui.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
-class DataTableState {
-    var firstVisibleItemIndex by mutableStateOf(0)
-    var firstVisibleItemScrollOffset by mutableStateOf(0)
-}
+import dev.logickoder.employee_expenses.ui.theme.secondaryPadding
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DataTable(
     modifier: Modifier = Modifier,
-    state: DataTableState,
 ) {
-    val header = remember {
+    val title = remember {
         listOf(
             "Date", "Merchant", "Total", "Status", "Comment"
         )
     }
     val data = remember {
-        (1..100).map {
-            header
+        (1..100).flatMap {
+            title
         }
     }
 
@@ -39,57 +41,60 @@ fun DataTable(
     }
 
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.horizontalScroll(rememberScrollState()),
         content = {
             stickyHeader {
                 DataRow(
-                    tableState = state,
-                    content = {
-                        items(header) { string ->
-                            Text(string)
-                        }
-                    }
+                    items = title,
+                    itemCreator = {
+                        Text(it)
+                    },
                 )
             }
-            items(data) { row ->
-                DataRow(
-                    tableState = state,
-                    content = {
-                        stickyHeader {
-                            Text(row.first())
+            data.chunked(title.size).forEach { row ->
+                item {
+                    DataRow(
+                        items = row,
+                        itemCreator = {
+                            DataItem(modifier =, title =)
                         }
-                        items(row) { string ->
-                            Text(string)
-                        }
-                    }
-                )
+                    )
+                }
             }
         },
     )
 }
 
 @Composable
-fun DataRow(
-    state: LazyListState = rememberLazyListState(),
-    tableState: DataTableState,
-    content: LazyListScope.() -> Unit,
+fun <T> DataRow(
+    modifier: Modifier = Modifier,
+    items: List<T>,
+    itemCreator: @Composable (T) -> Unit,
 ) {
-    if (state.isScrollInProgress) {
-        tableState.firstVisibleItemIndex = state.firstVisibleItemIndex
-        tableState.firstVisibleItemScrollOffset = state.firstVisibleItemScrollOffset
-    }
-    LazyRow(
-        state = state,
-        content = content,
+    Row(
+        modifier = modifier,
+        content = {
+            items.forEach { item ->
+                itemCreator(item)
+            }
+        },
     )
-    LaunchedEffect(
-        key1 = tableState.firstVisibleItemIndex,
-        key2 = tableState.firstVisibleItemScrollOffset,
-        block = {
-            state.scrollToItem(
-                index = tableState.firstVisibleItemIndex,
-                scrollOffset = tableState.firstVisibleItemScrollOffset,
+}
+
+@Composable
+fun DataItem(
+    modifier: Modifier,
+    title: String,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(secondaryPadding() / 2),
+        content = {
+            Divider()
+            Text(
+                text = title,
             )
+            Divider()
         }
     )
 }

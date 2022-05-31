@@ -35,7 +35,7 @@ class HomeFilterFormState {
     var to by mutableStateOf<LocalDate?>(null)
     var min by mutableStateOf<Double?>(null)
     var max by mutableStateOf<Double?>(null)
-    var hidden by mutableStateOf(false)
+    var hidden by mutableStateOf(true)
 }
 
 @Composable

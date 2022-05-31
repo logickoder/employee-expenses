@@ -74,7 +74,6 @@ fun HomeScreen(
                 content = {
                     DataTable(
                         modifier = Modifier.fillMaxWidth(),
-                        state = state.tableState,
                     )
                 }
             )
