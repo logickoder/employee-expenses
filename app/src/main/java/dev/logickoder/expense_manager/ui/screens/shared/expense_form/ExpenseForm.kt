@@ -159,9 +159,6 @@ fun ExpenseForm(
                     backgroundColor = DefaultInputColor.copy(0.05f)
                 ),
             )
-            receiptError.collectAsState().value?.let {
-                Text(it, color = Theme.colors.error)
-            }
             Avatar(
                 model = receipt.collectAsState().value,
                 shape = RoundedCornerShape(secondaryPadding()),

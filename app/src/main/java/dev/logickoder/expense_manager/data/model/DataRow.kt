@@ -14,7 +14,7 @@ data class DataRow(
     val total: Float,
     val status: String,
     val comment: String,
-    val receipt: String,
+    val receipt: String?,
 ) {
     val items: List<String>
         get() {

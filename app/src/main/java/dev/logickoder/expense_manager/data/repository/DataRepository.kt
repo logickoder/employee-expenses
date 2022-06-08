@@ -64,6 +64,6 @@ class DataRepository(database: AppDatabase) {
     }
 
     companion object {
-        const val startingQuery = "SELECT * FROM data"
+        const val startingQuery = "SELECT * FROM ${DataRow.TableName}"
     }
 }

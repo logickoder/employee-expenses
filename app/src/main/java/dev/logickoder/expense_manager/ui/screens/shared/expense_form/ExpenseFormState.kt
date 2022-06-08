@@ -1,6 +1,5 @@
 package dev.logickoder.expense_manager.ui.screens.shared.expense_form
 
-import android.util.Log
 import dev.logickoder.expense_manager.data.model.DataRow
 import dev.logickoder.expense_manager.ui.domain.FormState
 import dev.logickoder.expense_manager.ui.domain.MutableObservableState
@@ -41,13 +40,9 @@ class ExpenseFormState(
         output = { it }
     )
 
-    val receiptError = createErrorState()
     val receipt = MutableObservableState(
         initial = data?.receipt,
-        update = { receipt: String, _ ->
-            Log.e("ExpenseFormState", receipt)
-            receipt
-        },
+        update = { receipt: String, _ -> receipt },
         output = { it }
     )
 
@@ -67,7 +62,7 @@ class ExpenseFormState(
     )
 
     private val errors = listOf(
-        merchantError, totalError, dateError, receiptError, statusError
+        merchantError, totalError, dateError, statusError
     )
 
     override fun hasError() = errors.any { it.value != null }
@@ -86,8 +81,6 @@ class ExpenseFormState(
             dateError.emit(errorMessage.format("date"))
         if (status.value == null)
             statusError.emit(errorMessage.format("status"))
-        if (receipt.value == null)
-            receiptError.emit(errorMessage.format("receipt"))
 
         return if (hasError()) {
             null
@@ -97,7 +90,7 @@ class ExpenseFormState(
             merchant = merchant.value!!,
             total = total.value!!,
             status = status.value!!,
-            receipt = receipt.value!!,
+            receipt = receipt.value,
             comment = comment.value,
         )
     }
