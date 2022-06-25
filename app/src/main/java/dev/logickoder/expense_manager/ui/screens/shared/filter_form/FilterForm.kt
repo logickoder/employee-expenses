@@ -13,8 +13,6 @@ import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.ArrowDropUp
 import androidx.compose.material.icons.outlined.AttachMoney
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -30,21 +28,14 @@ import dev.logickoder.expense_manager.ui.screens.shared.input.InputField
 import dev.logickoder.expense_manager.ui.screens.shared.input.InputState
 import dev.logickoder.expense_manager.ui.screens.shared.input.InputWithField
 import dev.logickoder.expense_manager.ui.theme.secondaryPadding
+import dev.logickoder.expense_manager.utils.collectAsState
 
 @Composable
 fun FilterForm(
     state: FilterFormState,
     modifier: Modifier = Modifier,
     sectionSpacing: Dp = secondaryPadding()
-) {
-    val from by state.from.collectAsState(initial = "")
-    val to by state.to.collectAsState(initial = "")
-    val min by state.min.collectAsState(initial = "")
-    val max by state.max.collectAsState(initial = "")
-    val merchant by state.merchant.collectAsState(initial = "")
-    val merchants = stringArrayResource(id = R.array.merchants).toList()
-    val status by state.status.collectAsState(initial = null)
-
+) = with(state) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(
@@ -54,13 +45,13 @@ fun FilterForm(
         content = {
             DatePicker(
                 title = stringResource(id = R.string.from),
-                state = InputState(from),
-                onDateChange = state::updateFromDate,
+                state = InputState(from.collectAsState().value),
+                onDateChange = from::emit,
             )
             DatePicker(
                 title = stringResource(id = R.string.to),
-                state = InputState(to),
-                onDateChange = state::updateToDate,
+                state = InputState(to.collectAsState().value),
+                onDateChange = to::emit,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -72,8 +63,8 @@ fun FilterForm(
                         modifier = Modifier.weight(0.45f),
                         title = stringResource(id = R.string.min),
                         state = InputState(
-                            value = min,
-                            onValueChanged = state::updateMinAmount,
+                            value = min.collectAsState().value,
+                            onValueChanged = min::emit,
                             icon = textIcon,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
@@ -84,8 +75,8 @@ fun FilterForm(
                         modifier = Modifier.weight(0.45f),
                         title = stringResource(id = R.string.max),
                         state = InputState(
-                            value = max,
-                            onValueChanged = state::updateMaxAmount,
+                            value = max.collectAsState().value,
+                            onValueChanged = max::emit,
                             icon = textIcon,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
@@ -98,9 +89,9 @@ fun FilterForm(
                 title = stringResource(id = R.string.merchant),
                 content = { interactionSource ->
                     DropdownField(
-                        suggested = merchant,
-                        suggestions = merchants,
-                        onSuggestionSelected = state::updateMerchant,
+                        suggested = merchant.collectAsState().value,
+                        suggestions = stringArrayResource(id = R.array.merchants).toList(),
+                        onSuggestionSelected = merchant::emit,
                         dropdownField = { suggested, expanded ->
                             InputField(
                                 state = InputState(
@@ -135,9 +126,9 @@ fun FilterForm(
                                     content = {
                                         row.forEach { item ->
                                             CheckboxItem(
-                                                checked = status == item,
+                                                checked = status.collectAsState().value == item,
                                                 onCheckedChange = { isChecked ->
-                                                    state.updateStatus(item, isChecked)
+                                                    status.emit(isChecked to item)
                                                 },
                                                 text = {
                                                     Text(item)
