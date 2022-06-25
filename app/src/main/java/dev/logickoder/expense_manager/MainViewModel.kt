@@ -14,6 +14,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val profileState = ProfileState()
     val homeState = HomeState(
         repository = (app as Provider).provider[DataRepository::class.java]!!,
-        filterFormState = FilterFormState(),
+        filterFormState = FilterFormState((app as Provider).provider[DataRepository::class.java]!!),
     )
 }

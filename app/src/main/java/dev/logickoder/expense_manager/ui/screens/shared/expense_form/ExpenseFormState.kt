@@ -24,9 +24,7 @@ class ExpenseFormState(
     val totalError = createErrorState()
     val total = MutableObservableState(
         initial = data?.total,
-        update = { amount: String, initial ->
-            amount.toFloatOrNull() ?: initial
-        },
+        update = { amount: String, _ -> amount.toFloatOrNull() },
         output = { if (it == null) "" else "%.2f".format(it) }
     )
 
@@ -34,7 +32,7 @@ class ExpenseFormState(
     val date = MutableObservableState(
         initial = data?.date,
         update = { date: LocalDate?, _ -> date },
-        output = { it.toText() }
+        output = { it?.toText() ?: "" }
     )
 
     val comment = MutableObservableState(
@@ -76,7 +74,7 @@ class ExpenseFormState(
 
     override fun clearErrors() = errors.forEach { it.emit(null) }
 
-    override fun save(): DataRow? {
+    override suspend fun save(): DataRow? {
         val errorMessage = "Please provide a %s"
         clearErrors()
 

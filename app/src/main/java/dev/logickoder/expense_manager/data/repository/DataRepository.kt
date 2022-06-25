@@ -11,6 +11,7 @@ class DataRepository(database: AppDatabase) {
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
     private val dao = database.dao()
     private var lastSortHeader: DataHeader? = null
+    private var query = startingQuery
 
     val headers = MutableStateFlow(
         database.columnNames(DataRow.TableName).map {
@@ -20,18 +21,26 @@ class DataRepository(database: AppDatabase) {
         }
     )
 
-    val data = MutableStateFlow(emptyList<DataRow>()).also {
-        sort(lastSortHeader)
-    }
+    val data = MutableStateFlow(emptyList<DataRow>())
 
-    fun add(data: DataRow) {
+    init {
         scope.launch {
-            dao.insert(data)
             sort(lastSortHeader)
         }
     }
 
-    fun sort(header: DataHeader?) {
+    suspend fun add(data: DataRow) = withContext(Dispatchers.IO) {
+        dao.insert(data)
+        sort(lastSortHeader)
+    }
+
+    suspend fun query(query: String) = withContext(Dispatchers.IO) {
+        val queriedData = dao.runtimeQuery(SimpleSQLiteQuery(query))
+        data.emit(queriedData)
+        this@DataRepository.query = query
+    }
+
+    suspend fun sort(header: DataHeader?) {
         // validate that this header is in the table
         if (header != null) {
             headers.value.firstOrNull { it.value == header.value } ?: return
@@ -42,23 +51,19 @@ class DataRepository(database: AppDatabase) {
                 sortType = if (it == header) it.sortType.switch() else DataHeader.SortType.None
             )
         }
-
-        scope.launch {
-            val query = "SELECT * FROM data ORDER BY ${header?.value} %s"
-            val sortedData = when (header?.sortType?.switch()) {
-                DataHeader.SortType.Up -> dao.runtimeQuery(
-                    SimpleSQLiteQuery(query.format("ASC"))
-                )
-                DataHeader.SortType.Down -> dao.runtimeQuery(
-                    SimpleSQLiteQuery(query.format("DESC"))
-                )
-                DataHeader.SortType.None, null -> dao.getAll()
-            }
-            lastSortHeader = header
-            withContext(Dispatchers.Main) {
-                headers.emit(updatedList)
-                data.emit(sortedData)
-            }
+        headers.emit(updatedList)
+        val chain = when (header?.sortType?.switch()) {
+            DataHeader.SortType.Up -> "ORDER BY ${header.value} ASC"
+            DataHeader.SortType.Down -> "ORDER BY ${header.value} DESC"
+            DataHeader.SortType.None, null -> ""
         }
+        val queryBeforeSorting = query
+        query("$query $chain")
+        query = queryBeforeSorting
+        lastSortHeader = header
+    }
+
+    companion object {
+        const val startingQuery = "SELECT * FROM data"
     }
 }

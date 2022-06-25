@@ -2,17 +2,20 @@ package dev.logickoder.expense_manager.ui.screens.shared.filter_form
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.HoverInteraction
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.ArrowDropUp
 import androidx.compose.material.icons.outlined.AttachMoney
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -23,21 +26,21 @@ import dev.logickoder.expense_manager.R
 import dev.logickoder.expense_manager.ui.screens.shared.CheckboxItem
 import dev.logickoder.expense_manager.ui.screens.shared.DatePicker
 import dev.logickoder.expense_manager.ui.screens.shared.DropdownField
-import dev.logickoder.expense_manager.ui.screens.shared.input.Input
-import dev.logickoder.expense_manager.ui.screens.shared.input.InputField
-import dev.logickoder.expense_manager.ui.screens.shared.input.InputState
-import dev.logickoder.expense_manager.ui.screens.shared.input.InputWithField
+import dev.logickoder.expense_manager.ui.screens.shared.input.*
+import dev.logickoder.expense_manager.ui.theme.Theme
 import dev.logickoder.expense_manager.ui.theme.secondaryPadding
 import dev.logickoder.expense_manager.utils.collectAsState
+import kotlinx.coroutines.launch
 
 @Composable
 fun FilterForm(
     state: FilterFormState,
     modifier: Modifier = Modifier,
+    hideForm: () -> Unit,
     sectionSpacing: Dp = secondaryPadding()
 ) = with(state) {
     Column(
-        modifier = modifier,
+        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(
             sectionSpacing,
             Alignment.CenterVertically
@@ -140,6 +143,40 @@ fun FilterForm(
                             }
                         )
                     }
+                }
+            )
+            val coroutineScope = rememberCoroutineScope()
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(secondaryPadding()),
+                content = {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Button(
+                        content = {
+                            Text(stringResource(id = R.string.filter))
+                        },
+                        onClick = {
+                            coroutineScope.launch {
+                                save()
+                                hideForm()
+                            }
+                        },
+                    )
+                    TextButton(
+                        content = {
+                            Text(stringResource(id = R.string.clear))
+                        },
+                        onClick = {
+                            coroutineScope.launch {
+                                clear()
+                                save()
+                                hideForm()
+                            }
+                        },
+                        colors = ButtonDefaults.textButtonColors(
+                            backgroundColor = DefaultInputColor.copy(0.05f),
+                            contentColor = Theme.colors.error,
+                        ),
+                    )
                 }
             )
         }

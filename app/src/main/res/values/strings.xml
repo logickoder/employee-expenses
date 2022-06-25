@@ -8,15 +8,17 @@
     <string name="info">Info</string>
     <string name="logout">Logout</string>
 
-    <string name="to_be_reimbursed">To be reimbursed\n$%1$s</string>
+    <string name="to_be_reimbursed">To be reimbursed\n%1$s</string>
     <string name="filters">Filters</string>
 
+    <string name="filter">Filter</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
     <string name="merchant">Merchant</string>
     <string name="status">Status</string>
+    <string name="clear">Clear</string>
 
     <string name="total">Total</string>
     <string name="save">Save</string>

@@ -1,23 +1,25 @@
 package dev.logickoder.expense_manager.ui.screens.shared.filter_form
 
-import dev.logickoder.expense_manager.data.model.DataRow
+import dev.logickoder.expense_manager.data.repository.DataRepository
 import dev.logickoder.expense_manager.ui.domain.FormState
 import dev.logickoder.expense_manager.ui.domain.MutableObservableState
 import dev.logickoder.expense_manager.utils.toText
 import java.time.LocalDate
 
 
-class FilterFormState : FormState<DataRow> {
+class FilterFormState(
+    private val repository: DataRepository,
+) : FormState<Nothing> {
     val from = MutableObservableState<LocalDate?, LocalDate?, String>(
         initial = null,
-        update = { it: LocalDate?, _ -> it },
-        output = { it.toText() }
+        update = { it, _ -> it },
+        output = { it?.toText() ?: "" }
     )
 
     val to = MutableObservableState<LocalDate?, LocalDate?, String>(
         initial = null,
-        update = { it: LocalDate?, _ -> it },
-        output = { it.toText() }
+        update = { it, _ -> it },
+        output = { it?.toText() ?: "" }
     )
 
     val min = MutableObservableState<String?, Float?, String>(
@@ -50,8 +52,18 @@ class FilterFormState : FormState<DataRow> {
 
     override fun clearErrors() {}
 
-    override fun save(): DataRow? {
-        TODO("Not yet implemented")
+    override suspend fun save(): Nothing? {
+        val query = StringBuilder(DataRepository.startingQuery)
+        val startTime = from.value?.toEpochDay() ?: Long.MIN_VALUE
+        val endTime = to.value?.toEpochDay() ?: Long.MAX_VALUE
+        query.append(" WHERE date BETWEEN $startTime AND $endTime")
+        val minAmount = min.value ?: Float.MIN_VALUE
+        val maxAmount = max.value ?: Float.MAX_VALUE
+        query.append(" AND total BETWEEN $minAmount AND $maxAmount")
+        merchant.value?.let { query.append(" AND merchant = '$it'") }
+        status.value?.let { query.append(" AND status = '$it'") }
+        repository.query(query.toString())
+        return null
     }
 
     override fun clear() {

@@ -48,6 +48,10 @@ fun DataTable(
         modifier = modifier.horizontalScroll(rememberScrollState()),
         content = {
             stickyHeader {
+                Divider(
+                    thickness = 2.dp,
+                    modifier = Modifier.width(tableWidth),
+                )
                 DataRow(
                     modifier = Modifier
                         .width(tableWidth)

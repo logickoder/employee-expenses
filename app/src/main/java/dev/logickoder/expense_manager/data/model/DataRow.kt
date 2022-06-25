@@ -2,8 +2,8 @@ package dev.logickoder.expense_manager.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import dev.logickoder.expense_manager.utils.currency
 import dev.logickoder.expense_manager.utils.toText
-import java.text.DecimalFormat
 import java.time.LocalDate
 
 @Entity(tableName = DataRow.TableName)
@@ -21,7 +21,7 @@ data class DataRow(
             return listOf(
                 date.toText(),
                 merchant,
-                "$${formatter.format(total)}",
+                total.currency(),
                 status,
                 comment,
             )
@@ -29,6 +29,5 @@ data class DataRow(
 
     companion object {
         const val TableName = "data"
-        private val formatter = DecimalFormat("#,###.00")
     }
 }

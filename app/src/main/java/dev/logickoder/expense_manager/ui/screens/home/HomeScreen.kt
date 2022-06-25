@@ -12,10 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -79,7 +76,9 @@ fun HomeScreen(
                             ExpenseForm(
                                 state = expenseState,
                                 onSaveClicked = {
-                                    if (save()) dismiss()
+                                    coroutineScope.launch {
+                                        if (save()) dismiss()
+                                    }
                                 },
                                 onCancelClicked = dismiss,
                                 onDeleteClicked = {
@@ -94,6 +93,7 @@ fun HomeScreen(
             )
         },
         content = {
+            var formHidden by remember { mutableStateOf(true) }
             Scaffold(
                 modifier = modifier,
                 topBar = {
@@ -119,8 +119,12 @@ fun HomeScreen(
                         content = {
                             HomeHeader(
                                 modifier = Modifier.padding(secondaryPadding()),
-                                reimbursed = reimbursed.collectAsState().value,
+                                reimbursed = reimbursed.collectAsState(0f).value,
                                 filterFormState = state.filterFormState,
+                                filterFormHidden = formHidden,
+                                changeFilterFormHidden = {
+                                    formHidden = it
+                                }
                             )
                             Surface(
                                 elevation = 4.dp,
@@ -129,7 +133,9 @@ fun HomeScreen(
                                         headers = repository.headers.collectAsState().value,
                                         items = repository.data.collectAsState().value,
                                         onHeaderClick = { header ->
-                                            repository.sort(header)
+                                            coroutineScope.launch {
+                                                repository.sort(header)
+                                            }
                                         },
                                         onRowClick = { row ->
                                             expense.emit(ExpenseFormState(row))
@@ -144,7 +150,7 @@ fun HomeScreen(
                     )
                 },
                 floatingActionButton = {
-                    FloatingActionButton(
+                    if (formHidden) FloatingActionButton(
                         onClick = {
                             if (expenseState.data != null) expense.emit(ExpenseFormState())
                             coroutineScope.launch {
