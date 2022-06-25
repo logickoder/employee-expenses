@@ -15,6 +15,18 @@
     <string name="to">To</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
+    <string name="merchant">Merchant</string>
+    <string name="status">Status</string>
+
+    <string name="total">Total</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="date">Date</string>
+    <string name="comment">Comment</string>
+    <string name="delete">Delete</string>
+    <string name="select_receipt">Select receipt</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="edit_expense">Edit Expense</string>
 
     <string name="profile">Profile</string>
     <string name="name">Name</string>
