@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="merchants">
+        <item>Restaurant</item>
+        <item>Hotel</item>
+        <item>Office Supplies</item>
+        <item>Airline</item>
+        <item>Shuttle</item>
+        <item>Rental Car</item>
+        <item>Parking</item>
+        <item>Taxi</item>
+        <item>Ride Sharing</item>
+        <item>Fast Food</item>
+        <item>Electronics</item>
+        <item>Breakfast</item>
+    </string-array>
+
+    <string-array name="statuses">
+        <item>New</item>
+        <item>In Progress</item>
+        <item>Reimbursed</item>
+    </string-array>
+</resources>

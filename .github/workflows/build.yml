@@ -28,7 +28,7 @@ jobs:
         run: ./gradlew test --stacktrace
 
   apk:
-    name: Build APK
+    name: Build Debug APK
     runs-on: ubuntu-latest
 
     steps:
@@ -57,6 +57,6 @@ jobs:
         id: upload
         uses: JantHsueh/upload-file-action@master
         with:
-          url: ${{ format('https://{0}@api.appetize.io/v1/apps/', secrets.APPETIZE_TOKEN) }}
+          url: ${{ format('https://{0}@api.appetize.io/v1/apps/nye19v8gw59wkabxjzmk9pdrp0', secrets.APPETIZE_TOKEN) }}
           forms: '{"platform":"android"}'
           fileForms: '{"file":"app/build/outputs/apk/debug/app-debug.apk"}'
