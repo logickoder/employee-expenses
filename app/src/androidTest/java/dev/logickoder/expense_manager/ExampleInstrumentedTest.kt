@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("dev.logickoder.employee_expenses", appContext.packageName)
+        assertEquals("dev.logickoder.expense_manager", appContext.packageName)
     }
 }

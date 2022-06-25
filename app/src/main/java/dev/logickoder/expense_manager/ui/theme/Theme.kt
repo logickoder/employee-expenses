@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 typealias Theme = MaterialTheme
 
 @Composable
-fun EmployeeExpensesTheme(
+fun ExpenseManagerTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
