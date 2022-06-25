@@ -1,8 +1,10 @@
 package dev.logickoder.expense_manager.ui.screens.shared
 
-import android.util.Log
 import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -12,7 +14,7 @@ import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.ArrowDropUp
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +25,7 @@ import dev.logickoder.expense_manager.data.model.DataHeader
 import dev.logickoder.expense_manager.data.model.DataRow
 import dev.logickoder.expense_manager.data.model.title
 import dev.logickoder.expense_manager.ui.theme.Theme
+import dev.logickoder.expense_manager.ui.theme.primaryPadding
 import dev.logickoder.expense_manager.ui.theme.secondaryPadding
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -35,25 +38,28 @@ fun DataTable(
     onHeaderClick: (DataHeader) -> Unit,
     onRowClick: (DataRow) -> Unit,
 ) {
-    LaunchedEffect(key1 = items, block = {
-        Log.e("DataTable", items.toString())
-    })
-    val padding = secondaryPadding() / 2
+    val padding = primaryPadding() / 2
+    val tableWidth = remember {
+        items.firstOrNull()?.let {
+            itemWidth * (it.items.size + 1) + (padding * 2)
+        } ?: 0.dp
+    }
     LazyColumn(
         modifier = modifier.horizontalScroll(rememberScrollState()),
         content = {
             stickyHeader {
                 DataRow(
-                    modifier = Modifier.padding(vertical = padding * 2, horizontal = padding),
+                    modifier = Modifier
+                        .width(tableWidth)
+                        .background(Color.White)
+                        .padding(horizontal = padding),
                     items = headers,
                     itemCreator = { _, header ->
                         DataHeader(
                             modifier = Modifier
-                                .clickable {
-                                    onHeaderClick(header)
-                                }
+                                .clickable { onHeaderClick(header) }
                                 .width(itemWidth)
-                                .background(Color.White),
+                                .padding(vertical = padding * 2),
                             text = header.title,
                             type = header.sortType,
                         )
@@ -65,15 +71,16 @@ fun DataTable(
                 key = { i -> items[i].id },
                 itemContent = { i ->
                     val row = items[i]
-                    Divider(thickness = 2.dp, modifier = Modifier.fillMaxWidth())
+                    Divider(
+                        thickness = 2.dp,
+                        modifier = Modifier.width(tableWidth),
+                    )
                     DataRow(
                         modifier = Modifier
-                            .padding(padding)
-                            .clickable(
-                                onClick = {
-                                    onRowClick(row)
-                                }
-                            ),
+                            .clickable {
+                                onRowClick(row)
+                            }
+                            .padding(padding),
                         items = row.items,
                         itemCreator = { index, text ->
                             DataItem(

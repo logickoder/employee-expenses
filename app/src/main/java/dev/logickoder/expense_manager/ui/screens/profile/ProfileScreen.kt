@@ -3,6 +3,8 @@ package dev.logickoder.expense_manager.ui.screens.profile
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Logout
@@ -48,7 +50,7 @@ fun ProfileScreen(
         backgroundColor = Theme.colors.surface,
         topBar = {
             AppBar(
-                title = stringResource(id = R.string.app_name),
+                title = stringResource(id = R.string.profile),
                 navigateBack = goBack,
                 actions = {
                     AppBarIconButton(
@@ -61,6 +63,7 @@ fun ProfileScreen(
         content = { padding ->
             Column(
                 modifier = Modifier
+                    .verticalScroll(rememberScrollState())
                     .padding(padding)
                     .padding(primaryPadding()),
                 verticalArrangement = Arrangement.spacedBy(
