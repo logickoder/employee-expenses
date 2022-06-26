@@ -2,14 +2,19 @@ package dev.logickoder.expense_manager.ui.screens.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -26,6 +31,7 @@ import dev.logickoder.expense_manager.ui.theme.Theme
 import dev.logickoder.expense_manager.ui.theme.primaryPadding
 import dev.logickoder.expense_manager.ui.theme.secondaryPadding
 import dev.logickoder.expense_manager.utils.collectAsState
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -45,8 +51,12 @@ fun ProfileScreen(
         )
     }
 
+
+    val coroutineScope = rememberCoroutineScope()
+    val scaffoldState = rememberScaffoldState()
     Scaffold(
         modifier = modifier,
+        scaffoldState = scaffoldState,
         backgroundColor = Theme.colors.surface,
         topBar = {
             AppBar(
@@ -83,29 +93,55 @@ fun ProfileScreen(
                         title = stringResource(id = R.string.name),
                         state = InputState(
                             value = name.collectAsState().value,
+                            error = nameError.collectAsState().value,
                             onValueChanged = name::emit,
+                            required = true,
                         )
                     )
                     Input(
                         title = stringResource(id = R.string.job_description),
                         state = InputState(
                             value = jobDescription.collectAsState().value,
+                            error = jobDescriptionError.collectAsState().value,
                             onValueChanged = jobDescription::emit,
+                            required = true,
                         )
                     )
                     Input(
                         title = stringResource(id = R.string.department),
                         state = InputState(
                             value = department.collectAsState().value,
+                            error = departmentError.collectAsState().value,
                             onValueChanged = department::emit,
+                            required = true,
                         )
                     )
                     Input(
                         title = stringResource(id = R.string.location),
                         state = InputState(
                             value = location.collectAsState().value,
+                            error = locationError.collectAsState().value,
                             onValueChanged = location::emit,
+                            required = true,
                         )
+                    )
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = secondaryPadding()),
+                        shape = Theme.shapes.large,
+                        content = {
+                            Text(stringResource(id = R.string.save).uppercase())
+                        },
+                        onClick = {
+                            coroutineScope.launch {
+                                if (save() != null) {
+                                    scaffoldState.snackbarHostState.showSnackbar(
+                                        "Profile updated successfully"
+                                    )
+                                }
+                            }
+                        },
                     )
                 }
             )

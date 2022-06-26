@@ -11,7 +11,7 @@ import java.time.LocalDate
 
 class ExpenseFormState(
     val data: DataRow? = null,
-) : FormState<DataRow> {
+) : FormState<DataRow>() {
 
     val isEdit = data != null
 
@@ -63,13 +63,9 @@ class ExpenseFormState(
         output = { it }
     )
 
-    private val errors = listOf(
+    override val errors = listOf(
         merchantError, totalError, dateError, statusError
     )
-
-    override fun hasError() = errors.any { it.value != null }
-
-    override fun clearErrors() = errors.forEach { it.emit(null) }
 
     override suspend fun save(): DataRow? {
         val errorMessage = "Please provide a %s"
