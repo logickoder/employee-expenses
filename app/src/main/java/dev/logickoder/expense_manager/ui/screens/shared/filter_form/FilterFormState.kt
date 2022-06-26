@@ -11,7 +11,7 @@ import java.time.LocalDate
 
 class FilterFormState(
     private val repository: DataRepository,
-) : FormState<Nothing> {
+) : FormState<Nothing>() {
     val from = MutableObservableState<LocalDate?, LocalDate?, String>(
         initial = null,
         update = { it, _ -> it },
@@ -49,10 +49,6 @@ class FilterFormState(
         },
         output = { it ?: "" }
     )
-
-    override fun hasError() = false
-
-    override fun clearErrors() {}
 
     override suspend fun save(): Nothing? {
         val query = StringBuilder(DataRepository.startingQuery)
