@@ -1,9 +1,14 @@
 package dev.logickoder.expense_manager.ui.domain
 
 
-interface FormState<T> {
-    fun hasError(): Boolean
-    fun clearErrors()
-    suspend fun save(): T?
-    fun clear()
+abstract class FormState<T> {
+    protected open val errors: List<MutableObservableState<String?, String?, String?>> = emptyList()
+
+    fun hasError() = errors.any { it.value != null }
+
+    fun clearErrors() = errors.forEach { it.emit(null) }
+
+    abstract suspend fun save(): T?
+
+    open fun clear() {}
 }

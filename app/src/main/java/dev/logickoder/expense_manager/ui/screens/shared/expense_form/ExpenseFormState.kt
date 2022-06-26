@@ -1,31 +1,32 @@
 package dev.logickoder.expense_manager.ui.screens.shared.expense_form
 
-import android.util.Log
 import dev.logickoder.expense_manager.data.model.DataRow
 import dev.logickoder.expense_manager.ui.domain.FormState
 import dev.logickoder.expense_manager.ui.domain.MutableObservableState
 import dev.logickoder.expense_manager.utils.createErrorState
+import dev.logickoder.expense_manager.utils.float
+import dev.logickoder.expense_manager.utils.formatted
 import dev.logickoder.expense_manager.utils.toText
 import java.time.LocalDate
 
 class ExpenseFormState(
     val data: DataRow? = null,
-) : FormState<DataRow> {
+) : FormState<DataRow>() {
 
     val isEdit = data != null
 
     val merchantError = createErrorState()
     val merchant = MutableObservableState(
         initial = data?.merchant,
-        update = { value: String, _ -> value },
+        update = { value: String?, _ -> value },
         output = { it ?: "" }
     )
 
     val totalError = createErrorState()
     val total = MutableObservableState(
         initial = data?.total,
-        update = { amount: String, _ -> amount.toFloatOrNull() },
-        output = { if (it == null) "" else "%.2f".format(it) }
+        update = { amount: String?, _ -> amount?.float },
+        output = { it?.formatted ?: "" }
     )
 
     val dateError = createErrorState()
@@ -41,21 +42,17 @@ class ExpenseFormState(
         output = { it }
     )
 
-    val receiptError = createErrorState()
     val receipt = MutableObservableState(
         initial = data?.receipt,
-        update = { receipt: String, _ ->
-            Log.e("ExpenseFormState", receipt)
-            receipt
-        },
+        update = { receipt: String?, _ -> receipt },
         output = { it }
     )
 
     val statusError = createErrorState()
     val status = MutableObservableState(
         initial = data?.status,
-        update = { status: Pair<Boolean, String>, initial ->
-            if (status.first) status.second else initial
+        update = { status: Pair<Boolean, String>?, initial ->
+            if (status?.first == true) status.second else initial
         },
         output = { it }
     )
@@ -66,13 +63,9 @@ class ExpenseFormState(
         output = { it }
     )
 
-    private val errors = listOf(
-        merchantError, totalError, dateError, receiptError, statusError
+    override val errors = listOf(
+        merchantError, totalError, dateError, statusError
     )
-
-    override fun hasError() = errors.any { it.value != null }
-
-    override fun clearErrors() = errors.forEach { it.emit(null) }
 
     override suspend fun save(): DataRow? {
         val errorMessage = "Please provide a %s"
@@ -86,8 +79,6 @@ class ExpenseFormState(
             dateError.emit(errorMessage.format("date"))
         if (status.value == null)
             statusError.emit(errorMessage.format("status"))
-        if (receipt.value == null)
-            receiptError.emit(errorMessage.format("receipt"))
 
         return if (hasError()) {
             null
@@ -97,17 +88,18 @@ class ExpenseFormState(
             merchant = merchant.value!!,
             total = total.value!!,
             status = status.value!!,
-            receipt = receipt.value!!,
+            receipt = receipt.value,
             comment = comment.value,
         )
     }
 
     override fun clear() {
-        merchant.emit("")
-        total.emit("")
+        merchant.emit(null)
+        total.emit(null)
         date.emit(null)
         comment.emit("")
-        receipt.emit("")
-        status.emit(true to "")
+        receipt.emit(null)
+        status.emit(null)
+        clearErrors()
     }
 }

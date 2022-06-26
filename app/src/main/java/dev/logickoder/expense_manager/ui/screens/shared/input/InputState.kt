@@ -19,5 +19,6 @@ data class InputState(
     val readOnly: Boolean = false,
     val enabled: Boolean = true,
     val singleLine: Boolean = true,
+    val required: Boolean = false,
     val visualTransformation: VisualTransformation = VisualTransformation.None,
 )

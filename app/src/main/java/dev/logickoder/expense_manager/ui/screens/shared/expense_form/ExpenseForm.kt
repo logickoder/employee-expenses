@@ -22,7 +22,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dev.logickoder.expense_manager.R
 import dev.logickoder.expense_manager.ui.screens.shared.*
-import dev.logickoder.expense_manager.ui.screens.shared.input.*
+import dev.logickoder.expense_manager.ui.screens.shared.input.DefaultInputColor
+import dev.logickoder.expense_manager.ui.screens.shared.input.Input
+import dev.logickoder.expense_manager.ui.screens.shared.input.InputField
+import dev.logickoder.expense_manager.ui.screens.shared.input.InputState
+import dev.logickoder.expense_manager.ui.theme.ErrorText
 import dev.logickoder.expense_manager.ui.theme.Theme
 import dev.logickoder.expense_manager.ui.theme.secondaryPadding
 import dev.logickoder.expense_manager.utils.collectAsState
@@ -54,20 +58,23 @@ fun ExpenseForm(
         content = {
             Input(
                 title = stringResource(id = R.string.merchant),
-                content = { interactionSource ->
+                state = InputState(
+                    value = merchant.collectAsState().value,
+                    readOnly = true,
+                    required = true,
+                    error = merchantError.collectAsState().value,
+                ),
+                content = { interactionSource, state ->
                     DropdownField(
-                        suggested = merchant.collectAsState().value,
+                        suggested = state.value,
                         suggestions = stringArrayResource(id = R.array.merchants).toList(),
                         onSuggestionSelected = merchant::emit,
-                        dropdownField = { suggested, expanded ->
+                        dropdownField = { _, expanded ->
                             InputField(
-                                state = InputState(
-                                    value = suggested,
-                                    readOnly = true,
-                                    error = merchantError.collectAsState().value,
+                                state = state.copy(
                                     icon = Alignment.End to if (expanded) {
                                         Icons.Outlined.ArrowDropUp
-                                    } else Icons.Outlined.ArrowDropDown,
+                                    } else Icons.Outlined.ArrowDropDown
                                 ),
                                 interactionSource = interactionSource,
                             )
@@ -75,13 +82,14 @@ fun ExpenseForm(
                     )
                 }
             )
-            InputWithField(
+            Input(
                 title = stringResource(id = R.string.total),
                 state = InputState(
                     value = total.collectAsState().value,
                     onValueChanged = total::emit,
                     icon = Alignment.Start to Icons.Outlined.AttachMoney,
                     error = totalError.collectAsState().value,
+                    required = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                     ),
@@ -92,25 +100,28 @@ fun ExpenseForm(
                 state = InputState(
                     value = date.collectAsState().value,
                     error = dateError.collectAsState().value,
+                    required = true,
                 ),
                 onDateChange = date::emit,
             )
             Input(
                 title = stringResource(id = R.string.comment),
-                content = { interactionSource ->
+                state = InputState(
+                    value = comment.collectAsState().value,
+                    onValueChanged = comment::emit
+                ),
+                content = { interactionSource, state ->
                     InputField(
                         modifier = Modifier.height(56.dp * 4),
-                        state = InputState(
-                            value = comment.collectAsState().value,
-                            onValueChanged = comment::emit
-                        ),
+                        state = state,
                         interactionSource = interactionSource,
                     )
                 }
             )
             Input(
                 title = stringResource(id = R.string.status),
-                content = { interactionSource ->
+                state = InputState(status.collectAsState().value ?: ""),
+                content = { interactionSource, state ->
                     val statuses = stringArrayResource(id = R.array.statuses).toList()
                     Column(
                         modifier = Modifier.clickable(
@@ -129,7 +140,7 @@ fun ExpenseForm(
                                     content = {
                                         row.forEach { item ->
                                             CheckboxItem(
-                                                checked = status.collectAsState().value == item,
+                                                checked = state.value == item,
                                                 onCheckedChange = { isChecked ->
                                                     status.emit(isChecked to item)
                                                 },
@@ -142,7 +153,7 @@ fun ExpenseForm(
                                 )
                             }
                             statusError.collectAsState().value?.let {
-                                Text(it, color = Theme.colors.error)
+                                ErrorText(error = it)
                             }
                         }
                     )
@@ -159,9 +170,6 @@ fun ExpenseForm(
                     backgroundColor = DefaultInputColor.copy(0.05f)
                 ),
             )
-            receiptError.collectAsState().value?.let {
-                Text(it, color = Theme.colors.error)
-            }
             Avatar(
                 model = receipt.collectAsState().value,
                 shape = RoundedCornerShape(secondaryPadding()),

@@ -11,7 +11,6 @@ fun ExpenseManagerTheme(
 ) {
     MaterialTheme(
         colors = ColorScheme,
-        typography = Typography,
         shapes = Shapes,
         content = content
     )

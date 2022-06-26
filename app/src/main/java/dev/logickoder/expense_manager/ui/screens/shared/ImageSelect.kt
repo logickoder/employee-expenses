@@ -3,7 +3,6 @@ package dev.logickoder.expense_manager.ui.screens.shared
 import android.Manifest
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.Text
@@ -29,7 +28,6 @@ fun ImageSelect(
         onResult = { uri: Uri? ->
             if (uri != null) {
                 val path = context.getPath(uri) ?: return@rememberLauncherForActivityResult
-                Log.e("ImageSelect", path)
                 onImageSelected(path)
             }
         }
@@ -46,7 +44,7 @@ fun ImageSelect(
     fun RequestGallery() = Dialog(
         onDismissRequest = { /*TODO*/ },
         content = {
-            Text("Gallery Permission Required")
+            Text("Gallery Permissions Required")
         }
     )
 

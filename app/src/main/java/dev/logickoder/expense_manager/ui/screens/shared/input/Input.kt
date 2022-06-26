@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.logickoder.expense_manager.ui.theme.ErrorText
 import dev.logickoder.expense_manager.ui.theme.Theme
 import dev.logickoder.expense_manager.ui.theme.primaryPadding
 import dev.logickoder.expense_manager.ui.theme.secondaryPadding
@@ -25,15 +27,27 @@ import dev.logickoder.expense_manager.ui.theme.secondaryPadding
 fun InputTitle(
     text: String,
     modifier: Modifier = Modifier,
+    error: Boolean = false,
+    required: Boolean = false,
     color: Color = Theme.colors.onSecondary,
 ) {
+    val contentColor = if (error) Theme.colors.error else color
     Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(secondaryPadding() / 4),
         content = {
             Text(
-                modifier = modifier,
                 text = text,
-                style = Theme.typography.body2.copy(fontWeight = FontWeight.Medium),
-                color = color,
+                style = Theme.typography.body2.copy(
+                    fontWeight = FontWeight.Medium,
+                    color = contentColor
+                )
+            )
+            if (required) Box(
+                modifier = Modifier
+                    .size(4.dp)
+                    .background(contentColor, CircleShape)
             )
         }
     )
@@ -51,7 +65,7 @@ fun InputField(
             BasicTextField(
                 modifier = modifier
                     .background(
-                        color = color.copy(alpha = 0.1f),
+                        color = (if (error == null) color else Theme.colors.error).copy(alpha = 0.1f),
                         shape = Theme.shapes.medium,
                     ),
                 value = value,
@@ -109,32 +123,7 @@ fun InputField(
                     )
                 }
             )
-            if (error != null) {
-                Text(
-                    error,
-                    color = Theme.colors.error,
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun InputWithField(
-    title: String,
-    state: InputState,
-    modifier: Modifier = Modifier,
-) {
-    Input(
-        modifier = modifier,
-        title = title,
-        color = state.color,
-        content = { interactionSource ->
-            InputField(
-                modifier = Modifier.fillMaxWidth(),
-                state = state,
-                interactionSource = interactionSource,
-            )
+            if (error != null) ErrorText(error = error)
         }
     )
 }
@@ -142,9 +131,15 @@ fun InputWithField(
 @Composable
 fun Input(
     title: String,
+    state: InputState,
     modifier: Modifier = Modifier,
-    color: Color = DefaultInputColor,
-    content: @Composable (MutableInteractionSource) -> Unit,
+    content: @Composable (MutableInteractionSource, InputState) -> Unit = { interactionSource, inputState ->
+        InputField(
+            modifier = Modifier.fillMaxWidth(),
+            state = inputState,
+            interactionSource = interactionSource,
+        )
+    },
 ) {
     Column(
         modifier = modifier,
@@ -154,11 +149,13 @@ fun Input(
             val focused by interactionSource.collectIsFocusedAsState()
             InputTitle(
                 text = title,
+                error = state.error != null,
+                required = state.required,
                 color = if (!focused) {
-                    color.content().content()
+                    state.color.content().content()
                 } else Theme.colors.primary.content(),
             )
-            content(interactionSource)
+            content(interactionSource, state)
         }
     )
 }
