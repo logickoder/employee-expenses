@@ -20,8 +20,8 @@ import dev.logickoder.expense_manager.ui.screens.shared.AppBar
 import dev.logickoder.expense_manager.ui.screens.shared.AppBarIconButton
 import dev.logickoder.expense_manager.ui.screens.shared.Avatar
 import dev.logickoder.expense_manager.ui.screens.shared.ImageSelect
+import dev.logickoder.expense_manager.ui.screens.shared.input.Input
 import dev.logickoder.expense_manager.ui.screens.shared.input.InputState
-import dev.logickoder.expense_manager.ui.screens.shared.input.InputWithField
 import dev.logickoder.expense_manager.ui.theme.Theme
 import dev.logickoder.expense_manager.ui.theme.primaryPadding
 import dev.logickoder.expense_manager.ui.theme.secondaryPadding
@@ -79,28 +79,28 @@ fun ProfileScreen(
                             showGallery.emit(true)
                         }
                     )
-                    InputWithField(
+                    Input(
                         title = stringResource(id = R.string.name),
                         state = InputState(
                             value = name.collectAsState().value,
                             onValueChanged = name::emit,
                         )
                     )
-                    InputWithField(
+                    Input(
                         title = stringResource(id = R.string.job_description),
                         state = InputState(
                             value = jobDescription.collectAsState().value,
                             onValueChanged = jobDescription::emit,
                         )
                     )
-                    InputWithField(
+                    Input(
                         title = stringResource(id = R.string.department),
                         state = InputState(
                             value = department.collectAsState().value,
                             onValueChanged = department::emit,
                         )
                     )
-                    InputWithField(
+                    Input(
                         title = stringResource(id = R.string.location),
                         state = InputState(
                             value = location.collectAsState().value,

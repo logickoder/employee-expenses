@@ -26,7 +26,10 @@ import dev.logickoder.expense_manager.R
 import dev.logickoder.expense_manager.ui.screens.shared.CheckboxItem
 import dev.logickoder.expense_manager.ui.screens.shared.DatePicker
 import dev.logickoder.expense_manager.ui.screens.shared.DropdownField
-import dev.logickoder.expense_manager.ui.screens.shared.input.*
+import dev.logickoder.expense_manager.ui.screens.shared.input.DefaultInputColor
+import dev.logickoder.expense_manager.ui.screens.shared.input.Input
+import dev.logickoder.expense_manager.ui.screens.shared.input.InputField
+import dev.logickoder.expense_manager.ui.screens.shared.input.InputState
 import dev.logickoder.expense_manager.ui.theme.Theme
 import dev.logickoder.expense_manager.ui.theme.secondaryPadding
 import dev.logickoder.expense_manager.utils.collectAsState
@@ -62,7 +65,7 @@ fun FilterForm(
                 horizontalArrangement = Arrangement.spacedBy(secondaryPadding()),
                 content = {
                     val textIcon = Alignment.Start to Icons.Outlined.AttachMoney
-                    InputWithField(
+                    Input(
                         modifier = Modifier.weight(0.45f),
                         title = stringResource(id = R.string.min),
                         state = InputState(
@@ -74,7 +77,7 @@ fun FilterForm(
                             ),
                         )
                     )
-                    InputWithField(
+                    Input(
                         modifier = Modifier.weight(0.45f),
                         title = stringResource(id = R.string.max),
                         state = InputState(
@@ -90,16 +93,18 @@ fun FilterForm(
             )
             Input(
                 title = stringResource(id = R.string.merchant),
-                content = { interactionSource ->
+                state = InputState(
+                    value = merchant.collectAsState().value,
+                    readOnly = true,
+                ),
+                content = { interactionSource, state ->
                     DropdownField(
-                        suggested = merchant.collectAsState().value,
+                        suggested = state.value,
                         suggestions = stringArrayResource(id = R.array.merchants).toList(),
                         onSuggestionSelected = merchant::emit,
-                        dropdownField = { suggested, expanded ->
+                        dropdownField = { _, expanded ->
                             InputField(
-                                state = InputState(
-                                    value = suggested,
-                                    readOnly = true,
+                                state = state.copy(
                                     icon = Alignment.End to if (expanded) {
                                         Icons.Outlined.ArrowDropUp
                                     } else Icons.Outlined.ArrowDropDown,
@@ -112,7 +117,8 @@ fun FilterForm(
             )
             Input(
                 title = stringResource(id = R.string.status),
-                content = { interactionSource ->
+                state = InputState(status.collectAsState().value),
+                content = { interactionSource, state ->
                     val statuses = stringArrayResource(id = R.array.statuses).toList()
                     statuses.chunked(2).forEach { row ->
                         Column(
@@ -129,7 +135,7 @@ fun FilterForm(
                                     content = {
                                         row.forEach { item ->
                                             CheckboxItem(
-                                                checked = status.collectAsState().value == item,
+                                                checked = state.value == item,
                                                 onCheckedChange = { isChecked ->
                                                     status.emit(isChecked to item)
                                                 },

@@ -18,14 +18,14 @@ class ExpenseFormState(
     val merchantError = createErrorState()
     val merchant = MutableObservableState(
         initial = data?.merchant,
-        update = { value: String, _ -> value },
+        update = { value: String?, _ -> value },
         output = { it ?: "" }
     )
 
     val totalError = createErrorState()
     val total = MutableObservableState(
         initial = data?.total,
-        update = { amount: String, _ -> amount.float },
+        update = { amount: String?, _ -> amount?.float },
         output = { it?.formatted ?: "" }
     )
 
@@ -44,15 +44,15 @@ class ExpenseFormState(
 
     val receipt = MutableObservableState(
         initial = data?.receipt,
-        update = { receipt: String, _ -> receipt },
+        update = { receipt: String?, _ -> receipt },
         output = { it }
     )
 
     val statusError = createErrorState()
     val status = MutableObservableState(
         initial = data?.status,
-        update = { status: Pair<Boolean, String>, initial ->
-            if (status.first) status.second else initial
+        update = { status: Pair<Boolean, String>?, initial ->
+            if (status?.first == true) status.second else initial
         },
         output = { it }
     )
@@ -98,11 +98,12 @@ class ExpenseFormState(
     }
 
     override fun clear() {
-        merchant.emit("")
-        total.emit("")
+        merchant.emit(null)
+        total.emit(null)
         date.emit(null)
         comment.emit("")
-        receipt.emit("")
-        status.emit(true to "")
+        receipt.emit(null)
+        status.emit(null)
+        clearErrors()
     }
 }

@@ -66,7 +66,11 @@ fun DatePicker(
         )
     Input(
         title = title,
-        content = { interactions ->
+        state = state.copy(
+            icon = Alignment.End to Icons.Outlined.CalendarViewMonth,
+            readOnly = true,
+        ),
+        content = { interactions, inputState ->
             val isFocused by interactions.collectIsFocusedAsState()
             LaunchedEffect(
                 key1 = isFocused,
@@ -75,10 +79,7 @@ fun DatePicker(
                 }
             )
             InputField(
-                state = state.copy(
-                    icon = Alignment.End to Icons.Outlined.CalendarViewMonth,
-                    readOnly = true,
-                ),
+                state = inputState,
                 interactionSource = interactions,
             )
         }
