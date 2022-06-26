@@ -50,11 +50,15 @@ fun DataTable(
             stickyHeader {
                 Divider(
                     thickness = 2.dp,
-                    modifier = Modifier.width(tableWidth),
+                    modifier = Modifier.run {
+                        if (tableWidth > 0.dp) width(tableWidth) else this
+                    },
                 )
                 DataRow(
                     modifier = Modifier
-                        .width(tableWidth)
+                        .run {
+                            if (tableWidth > 0.dp) width(tableWidth) else this
+                        }
                         .background(Color.White)
                         .padding(horizontal = padding),
                     items = headers,
