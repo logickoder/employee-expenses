@@ -8,6 +8,11 @@ private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 private val currencyFormatter = DecimalFormat("#,###.00")
 
 fun LocalDate.toText(): String = format(dateFormatter)
-fun String.toDate(): LocalDate = LocalDate.from(dateFormatter.parse(this))
 
-fun Float.currency(currency: String = "$") = "$currency${currencyFormatter.format(this)}"
+val Float.formatted: String
+    get() = currencyFormatter.format(this)
+
+val String.float: Float?
+    get() = replace(",", "").toFloatOrNull()
+
+fun Float.currency(currency: String = "$") = "$currency$formatted"

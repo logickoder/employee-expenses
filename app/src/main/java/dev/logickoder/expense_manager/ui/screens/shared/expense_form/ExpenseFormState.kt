@@ -4,6 +4,8 @@ import dev.logickoder.expense_manager.data.model.DataRow
 import dev.logickoder.expense_manager.ui.domain.FormState
 import dev.logickoder.expense_manager.ui.domain.MutableObservableState
 import dev.logickoder.expense_manager.utils.createErrorState
+import dev.logickoder.expense_manager.utils.float
+import dev.logickoder.expense_manager.utils.formatted
 import dev.logickoder.expense_manager.utils.toText
 import java.time.LocalDate
 
@@ -23,8 +25,8 @@ class ExpenseFormState(
     val totalError = createErrorState()
     val total = MutableObservableState(
         initial = data?.total,
-        update = { amount: String, _ -> amount.toFloatOrNull() },
-        output = { if (it == null) "" else "%.2f".format(it) }
+        update = { amount: String, _ -> amount.float },
+        output = { it?.formatted ?: "" }
     )
 
     val dateError = createErrorState()

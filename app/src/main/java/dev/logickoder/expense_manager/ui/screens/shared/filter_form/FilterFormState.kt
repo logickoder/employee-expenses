@@ -3,6 +3,8 @@ package dev.logickoder.expense_manager.ui.screens.shared.filter_form
 import dev.logickoder.expense_manager.data.repository.DataRepository
 import dev.logickoder.expense_manager.ui.domain.FormState
 import dev.logickoder.expense_manager.ui.domain.MutableObservableState
+import dev.logickoder.expense_manager.utils.float
+import dev.logickoder.expense_manager.utils.formatted
 import dev.logickoder.expense_manager.utils.toText
 import java.time.LocalDate
 
@@ -24,14 +26,14 @@ class FilterFormState(
 
     val min = MutableObservableState<String?, Float?, String>(
         initial = null,
-        update = { amount, _ -> amount?.toFloatOrNull() },
-        output = { if (it == null) "" else "%.2f".format(it) }
+        update = { amount, _ -> amount?.float },
+        output = { it?.formatted ?: "" }
     )
 
     val max = MutableObservableState<String?, Float?, String>(
         initial = null,
-        update = { amount, _ -> amount?.toFloatOrNull() },
-        output = { if (it == null) "" else "%.2f".format(it) }
+        update = { amount, _ -> amount?.float },
+        output = { it?.formatted ?: "" }
     )
 
     val merchant = MutableObservableState<String?, String?, String>(
