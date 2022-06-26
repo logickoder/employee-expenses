@@ -39,7 +39,16 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![product-screenshot](./screenshot.png)
+<table>
+<tr>
+<td valign="top" width="50%">
+
+![product-screenshot-1](./screenshots/screenshot-1.png)</td>
+<td valign="top" width="50%">
+
+![product-screenshot-2](./screenshots/screenshot-2.png)</td>
+</tr>
+</table>
 
 Very simple
 * You login to the app and add your expenses, every other thing is handled by us
@@ -104,4 +113,4 @@ logickoder - [@logickoder](https://twitter.com/logickoder) - chukwudumebiorazuli
 [issues-url]: https://github.com/logickoder/expense-manager/issues
 [license-shield]: https://img.shields.io/github/license/logickoder/expense-manager.svg?style=for-the-badge
 [license-url]: https://github.com/logickoder/expense-manager/blob/main/LICENSE.txt
-[product-screenshot]: screenshot.png
+[product-screenshot]: ./screenshots/screenshot-1.png
