@@ -35,11 +35,9 @@ compose-custom-view = "androidx.customview:customview:1.2.0-alpha02"
 compose-custom-view-pooling = "androidx.customview:customview-poolingcontainer:1.0.0"
 compose-material = "androidx.compose.material3:material3:1.2.0-alpha03"
 compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
+compose-navigation = "androidx.navigation:navigation-compose:2.6.0"
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
-compose-ui-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 # Datastore
@@ -56,9 +54,7 @@ junit = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" 
 junit-android = "androidx.test.ext:junit:1.1.5"
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 # Kotlinx
-kotlin-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
 kotlin-immutable = "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5"
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
 # Ktor

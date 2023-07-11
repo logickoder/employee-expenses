@@ -67,19 +67,14 @@ dependencies {
     // for using some java 8 classes like LocalDate with older versions of android
     coreLibraryDesugaring(libs.core.java8)
 
+    // Core
     implementation(libs.core)
     implementation(libs.core.appcompat)
-
-    // Material Design
-    implementation(libs.core.material)
-    implementation(libs.compose.material)
-    implementation(libs.compose.material.icons)
-
-    // Constraint Layout
     implementation(libs.core.constraintlayout)
-    implementation(libs.compose.constraintlayout)
+    implementation(libs.core.material)
 
     // Google Accompanist
+    implementation(libs.accompanist.permissions)
     implementation(libs.accompanist.placeholdermaterial)
 
     // Coil
@@ -88,10 +83,14 @@ dependencies {
     // Compose
     implementation(platform(libs.compose))
     implementation(libs.compose.activity)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.constraintlayout)
     debugImplementation(libs.compose.custom.view)
     debugImplementation(libs.compose.custom.view.pooling)
+    implementation(libs.compose.material)
+    implementation(libs.compose.material.icons)
+    implementation(libs.compose.navigation)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
     androidTestImplementation(platform(libs.compose))
     androidTestImplementation(libs.compose.ui.test.junit)
