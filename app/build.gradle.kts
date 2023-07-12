@@ -1,9 +1,7 @@
 @file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.android.application.get().pluginId)
-    id(libs.plugins.hilt.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
-    id(libs.plugins.kotlin.kapt.get().pluginId)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
 }
@@ -103,10 +101,6 @@ dependencies {
     // preferences datastore
     implementation(libs.datastore)
 
-    // hilt
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-
     // Kotlinx
     implementation(libs.kotlin.immutable)
     implementation(libs.kotlin.serialization)
@@ -124,9 +118,13 @@ dependencies {
     implementation(libs.napier)
 
     // Room
+    implementation(libs.room)
     ksp(libs.room.compiler)
-    implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+
+    // Voyager
+    implementation(libs.voyager)
+    implementation(libs.voyager.android)
 
     testImplementation(libs.junit)
     testImplementation(libs.junit.engine)

@@ -50,14 +50,6 @@ fun ExpenseForm(
     modifier: Modifier = Modifier,
     onDeleteClicked: () -> Unit = {},
 ) = with(state) {
-    if (showGallery.collectAsState().value) {
-        ImageSelect(
-            onImageSelected = {
-                receipt.emit(it)
-                showGallery.emit(false)
-            }
-        )
-    }
 
     Column(
         modifier = modifier,
@@ -170,16 +162,22 @@ fun ExpenseForm(
                     )
                 }
             )
-            TextButton(
+            ImageSelect(
+                onImageSelected = {
+                    receipt.emit(it)
+                },
                 content = {
-                    Text(stringResource(id = R.string.select_receipt))
-                },
-                onClick = {
-                    showGallery.emit(true)
-                },
-                colors = ButtonDefaults.textButtonColors(
-                    containerColor = DefaultInputColor.copy(0.05f)
-                ),
+
+                    TextButton(
+                        content = {
+                            Text(stringResource(id = R.string.select_receipt))
+                        },
+                        onClick = it,
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = DefaultInputColor.copy(0.05f)
+                        ),
+                    )
+                }
             )
             Avatar(
                 model = receipt.collectAsState().value,

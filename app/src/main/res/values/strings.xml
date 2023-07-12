@@ -35,4 +35,10 @@
     <string name="job_description">Job Description</string>
     <string name="department">Department</string>
     <string name="location">Location</string>
+
+    <!-- Permissions -->
+    <string name="decline">Decline</string>
+    <string name="permissions_title">Permissions required</string>
+    <string name="permissions_text">Please grant %1$s these permissions to work well.</string>
+    <string name="accept">Accept</string>
 </resources>

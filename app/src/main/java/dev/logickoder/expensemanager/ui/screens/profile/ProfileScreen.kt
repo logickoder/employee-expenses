@@ -44,16 +44,6 @@ fun ProfileScreen(
     sectionSpacing: Dp = secondaryPadding(),
 ) = with(state) {
 
-    if (showGallery.collectAsState().value) {
-        ImageSelect(
-            onImageSelected = {
-                avatar.emit(it)
-                showGallery.emit(false)
-            }
-        )
-    }
-
-
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
@@ -84,11 +74,16 @@ fun ProfileScreen(
                 ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
-                    Avatar(
-                        model = avatar.collectAsState().value,
-                        placeholder = rememberVectorPainter(Icons.Outlined.Person),
-                        onClick = {
-                            showGallery.emit(true)
+                    ImageSelect(
+                        onImageSelected = {
+                            avatar.emit(it)
+                        },
+                        content = {
+                            Avatar(
+                                model = avatar.collectAsState().value,
+                                placeholder = rememberVectorPainter(Icons.Outlined.Person),
+                                onClick = it
+                            )
                         }
                     )
                     Input(

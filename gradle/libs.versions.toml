@@ -3,12 +3,12 @@ accompanist = "0.30.1"
 compose = "2023.06.01"
 compose-compiler = "1.4.8"
 gradlePlugin = "7.4.2"
-hilt = "2.46.1"
 junit = "5.9.3"
 kotlin = "1.8.22"
 ktor = "2.3.2"
 lifecycle = "2.6.1"
 room = "2.5.2"
+voyager = "1.0.0-rc05"
 worker = "2.8.1"
 
 [libraries]
@@ -46,9 +46,6 @@ datastore = "androidx.datastore:datastore-preferences:1.1.0-alpha04"
 expresso = "androidx.test.espresso:espresso-core:3.5.1"
 # H2
 h2 = "com.h2database:h2:2.1.214"
-# Hilt
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 # JUnit
 junit = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-android = "androidx.test.ext:junit:1.1.5"
@@ -87,9 +84,12 @@ napier = "io.github.aakira:napier:2.6.1"
 # Postgre
 postgres = "org.postgresql:postgresql:42.6.0"
 # Room
+room = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+# Voyager
+voyager = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+voyager-android = { module = "cafe.adriel.voyager:voyager-androidx", version.ref = "voyager" }
 # Worker
 worker = { module = "androidx.work:work-runtime-ktx", version.ref = "worker" }
 worker-hilt = "androidx.hilt:hilt-work:1.0.0"
@@ -99,7 +99,6 @@ worker-testing = { module = "androidx.work:work-testing", version.ref = "worker"
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "gradlePlugin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

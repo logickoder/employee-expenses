@@ -49,12 +49,6 @@ class ProfileState(
         output = { it }
     )
 
-    val showGallery = MutableObservableState(
-        initial = false,
-        update = { show: Boolean, _ -> show },
-        output = { it }
-    )
-
     init {
         scope.launch {
             repo.get().collect { user ->

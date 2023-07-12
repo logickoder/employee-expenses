@@ -57,12 +57,6 @@ class ExpenseFormState(
         output = { it }
     )
 
-    val showGallery = MutableObservableState(
-        initial = false,
-        update = { showGallery: Boolean, _ -> showGallery },
-        output = { it }
-    )
-
     override val errors = listOf(
         merchantError, totalError, dateError, statusError
     )
