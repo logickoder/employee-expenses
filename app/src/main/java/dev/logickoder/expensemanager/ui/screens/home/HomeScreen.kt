@@ -11,17 +11,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,140 +49,137 @@ fun HomeScreen(
     logout: () -> Unit,
 ) = with(state) {
 
+    var formHidden by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
-    val scaffoldState = rememberBottomSheetScaffoldState()
-    val bottomSheetState by remember {
-        derivedStateOf {
-            scaffoldState.bottomSheetState
-        }
-    }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val expenseState by expense.collectAsState()
     val dismiss: () -> Unit = {
         coroutineScope.launch {
-            bottomSheetState.hide()
+            sheetState.hide()
         }
     }
 
     BackHandler(
-        enabled = bottomSheetState.isVisible,
+        enabled = sheetState.isVisible,
         onBack = dismiss,
     )
 
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        sheetContent = {
-            Scaffold(
-                topBar = {
-                    AppBar(
-                        title = stringResource(
-                            id = if (expenseState.isEdit) {
-                                R.string.edit_expense
-                            } else R.string.add_expense
-                        ),
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            AppBar(
+                title = stringResource(id = R.string.app_name),
+                actions = {
+                    AppBarIconButton(
+                        icon = Icons.Outlined.Person,
+                        onClick = navigateToProfileScreen,
                     )
-                },
-                containerColor = MaterialTheme.colorScheme.surface,
-                content = { padding ->
-                    Column(
-                        modifier = Modifier
-                            .padding(padding)
-                            .padding(horizontal = primaryPadding())
-                            .verticalScroll(rememberScrollState()),
+                    AppBarIconButton(
+                        icon = Icons.Outlined.Logout,
+                        onClick = logout,
+                    )
+                }
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+        content = { paddingValues ->
+            Column(
+                modifier = modifier
+                    .padding(paddingValues),
+                content = {
+                    HomeHeader(
+                        modifier = Modifier.padding(secondaryPadding()),
+                        reimbursed = reimbursed.collectAsState(0f).value,
+                        filterFormState = state.filterFormState,
+                        filterFormHidden = formHidden,
+                        changeFilterFormHidden = {
+                            formHidden = it
+                        }
+                    )
+                    Surface(
+                        shadowElevation = 4.dp,
                         content = {
-                            Spacer(modifier = Modifier.height(primaryPadding()))
-                            ExpenseForm(
-                                state = expenseState,
-                                onSaveClicked = {
+                            DataTable(
+                                headers = repository.headers.collectAsState().value,
+                                items = repository.data.collectAsState().value,
+                                onHeaderClick = { header ->
                                     coroutineScope.launch {
-                                        if (save()) dismiss()
+                                        repository.sort(header)
                                     }
                                 },
-                                onCancelClicked = dismiss,
-                                onDeleteClicked = {
-                                    expenseState.clear()
-                                    dismiss()
-                                },
+                                onRowClick = { row ->
+                                    expense.emit(ExpenseFormState(row))
+                                    coroutineScope.launch {
+                                        sheetState.expand()
+                                    }
+                                }
                             )
-                            Spacer(modifier = Modifier.height(primaryPadding()))
                         }
                     )
                 }
             )
         },
-        content = {
-            var formHidden by remember { mutableStateOf(true) }
-            Scaffold(
-                modifier = modifier,
-                topBar = {
-                    AppBar(
-                        title = stringResource(id = R.string.app_name),
-                        actions = {
-                            AppBarIconButton(
-                                icon = Icons.Outlined.Person,
-                                onClick = navigateToProfileScreen,
-                            )
-                            AppBarIconButton(
-                                icon = Icons.Outlined.Logout,
-                                onClick = logout,
-                            )
-                        }
-                    )
+        floatingActionButton = {
+            if (formHidden) FloatingActionButton(
+                onClick = {
+                    if (expenseState.data != null) expense.emit(ExpenseFormState())
+                    coroutineScope.launch {
+                        sheetState.expand()
+                    }
                 },
-                containerColor = MaterialTheme.colorScheme.surface,
-                content = { paddingValues ->
-                    Column(
-                        modifier = modifier
-                            .padding(paddingValues),
-                        content = {
-                            HomeHeader(
-                                modifier = Modifier.padding(secondaryPadding()),
-                                reimbursed = reimbursed.collectAsState(0f).value,
-                                filterFormState = state.filterFormState,
-                                filterFormHidden = formHidden,
-                                changeFilterFormHidden = {
-                                    formHidden = it
-                                }
-                            )
-                            Surface(
-                                shadowElevation = 4.dp,
-                                content = {
-                                    DataTable(
-                                        headers = repository.headers.collectAsState().value,
-                                        items = repository.data.collectAsState().value,
-                                        onHeaderClick = { header ->
-                                            coroutineScope.launch {
-                                                repository.sort(header)
-                                            }
-                                        },
-                                        onRowClick = { row ->
-                                            expense.emit(ExpenseFormState(row))
-                                            coroutineScope.launch {
-                                                bottomSheetState.expand()
-                                            }
-                                        }
-                                    )
-                                }
-                            )
-                        }
-                    )
-                },
-                floatingActionButton = {
-                    if (formHidden) FloatingActionButton(
-                        onClick = {
-                            if (expenseState.data != null) expense.emit(ExpenseFormState())
-                            coroutineScope.launch {
-                                bottomSheetState.expand()
-                            }
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Outlined.Add,
-                                contentDescription = null
-                            )
-                        }
+                content = {
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = null
                     )
                 }
             )
         }
     )
+
+    if (sheetState.isVisible) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = dismiss,
+            content = {
+                Scaffold(
+                    topBar = {
+                        AppBar(
+                            title = stringResource(
+                                id = if (expenseState.isEdit) {
+                                    R.string.edit_expense
+                                } else R.string.add_expense
+                            ),
+                        )
+                    },
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    content = { padding ->
+                        Column(
+                            modifier = Modifier
+                                .padding(padding)
+                                .padding(horizontal = primaryPadding())
+                                .verticalScroll(rememberScrollState()),
+                            content = {
+                                Spacer(modifier = Modifier.height(primaryPadding()))
+                                ExpenseForm(
+                                    state = expenseState,
+                                    onSaveClicked = {
+                                        coroutineScope.launch {
+                                            if (save()) dismiss()
+                                        }
+                                    },
+                                    onCancelClicked = dismiss,
+                                    onDeleteClicked = {
+                                        expenseState.clear()
+                                        dismiss()
+                                    },
+                                )
+                                Spacer(modifier = Modifier.height(primaryPadding()))
+                            }
+                        )
+                    }
+                )
+            }
+        )
+    }
 }
