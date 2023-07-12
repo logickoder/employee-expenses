@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.ArrowDropUp
 import androidx.compose.material.icons.outlined.AttachMoney
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,6 +40,7 @@ import dev.logickoder.expensemanager.ui.theme.secondaryPadding
 import dev.logickoder.expensemanager.utils.collectAsState
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterForm(
     state: FilterFormState,
@@ -108,6 +110,7 @@ fun FilterForm(
                         onSuggestionSelected = merchant::emit,
                         dropdownField = { _, expanded ->
                             InputField(
+                                modifier = Modifier.menuAnchor(),
                                 state = state.copy(
                                     icon = Alignment.End to if (expanded) {
                                         Icons.Outlined.ArrowDropUp
