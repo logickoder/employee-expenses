@@ -3,9 +3,9 @@ package dev.logickoder.expensemanager
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import dev.logickoder.expensemanager.data.repository.DataRepository
-import dev.logickoder.expensemanager.data.repository.UserRepository
-import dev.logickoder.expensemanager.di.Provider
+import dev.logickoder.expensemanager.app.data.repository.DataRepository
+import dev.logickoder.expensemanager.app.data.repository.UserRepository
+import dev.logickoder.expensemanager.app.di.Provider
 import dev.logickoder.expensemanager.ui.screens.home.HomeState
 import dev.logickoder.expensemanager.ui.screens.login.LoginState
 import dev.logickoder.expensemanager.ui.screens.profile.ProfileState

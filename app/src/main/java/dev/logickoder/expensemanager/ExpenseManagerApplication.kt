@@ -2,12 +2,12 @@ package dev.logickoder.expensemanager
 
 import android.app.Application
 import androidx.room.Room
-import dev.logickoder.expensemanager.data.repository.DataRepository
-import dev.logickoder.expensemanager.data.repository.UserRepository
-import dev.logickoder.expensemanager.data.source.local.AppDatabase
-import dev.logickoder.expensemanager.di.DependencyInjector
-import dev.logickoder.expensemanager.di.DependencyInjectorImpl
-import dev.logickoder.expensemanager.di.Provider
+import dev.logickoder.expensemanager.app.data.repository.DataRepository
+import dev.logickoder.expensemanager.app.data.repository.UserRepository
+import dev.logickoder.expensemanager.app.data.source.local.AppDatabase
+import dev.logickoder.expensemanager.app.di.DependencyInjector
+import dev.logickoder.expensemanager.app.di.DependencyInjectorImpl
+import dev.logickoder.expensemanager.app.di.Provider
 
 
 class ExpenseManagerApplication : Application(), Provider {

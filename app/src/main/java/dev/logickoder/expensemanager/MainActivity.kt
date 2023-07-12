@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
-import dev.logickoder.expensemanager.ui.NavGraph
-import dev.logickoder.expensemanager.ui.theme.ExpenseManagerTheme
+import dev.logickoder.expensemanager.app.NavGraph
+import dev.logickoder.expensemanager.app.theme.ExpenseManagerTheme
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

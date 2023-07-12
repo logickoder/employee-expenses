@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.logickoder.expensemanager.R
-import dev.logickoder.expensemanager.ui.theme.ExpenseManagerTheme
+import dev.logickoder.expensemanager.app.theme.ExpenseManagerTheme
 
 
 @Composable
