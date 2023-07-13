@@ -1,4 +1,4 @@
-package dev.logickoder.expensemanager.ui.screens.home
+package dev.logickoder.expensemanager.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -36,23 +36,22 @@ import dev.logickoder.expensemanager.app.utils.collectAsState
 import dev.logickoder.expensemanager.app.widgets.AppBar
 import dev.logickoder.expensemanager.app.widgets.AppBarIconButton
 import dev.logickoder.expensemanager.app.widgets.DataTable
-import dev.logickoder.expensemanager.ui.screens.shared.expense_form.ExpenseForm
-import dev.logickoder.expensemanager.ui.screens.shared.expense_form.ExpenseFormState
+import dev.logickoder.expensemanager.app.widgets.expenseform.ExpenseForm
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    model: HomeScreenModel,
     modifier: Modifier = Modifier,
-    state: HomeState,
     navigateToProfileScreen: () -> Unit,
     logout: () -> Unit,
-) = with(state) {
+) {
 
     var formHidden by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val expenseState by expense.collectAsState()
+    val expenseState by model.expense.collectAsState()
     val dismiss: () -> Unit = {
         coroutineScope.launch {
             sheetState.hide()
@@ -89,8 +88,8 @@ fun HomeScreen(
                 content = {
                     HomeHeader(
                         modifier = Modifier.padding(secondaryPadding()),
-                        reimbursed = reimbursed.collectAsState(0f).value,
-                        filterFormState = state.filterFormState,
+                        reimbursed = model.reimbursed.collectAsState(0f).value,
+                        filterFormModel = model.filterFormModel,
                         filterFormHidden = formHidden,
                         changeFilterFormHidden = {
                             formHidden = it
@@ -100,18 +99,11 @@ fun HomeScreen(
                         shadowElevation = 4.dp,
                         content = {
                             DataTable(
-                                headers = repository.headers.collectAsState().value,
-                                items = repository.data.collectAsState().value,
-                                onHeaderClick = { header ->
-                                    coroutineScope.launch {
-                                        repository.sort(header)
-                                    }
-                                },
+                                headers = model.headers.collectAsState().value,
+                                items = model.data.collectAsState().value,
+                                onHeaderClick = model::onHeaderClicked,
                                 onRowClick = { row ->
-                                    expense.emit(ExpenseFormState(row))
-                                    coroutineScope.launch {
-                                        sheetState.expand()
-                                    }
+                                    model.onRowClick(row, sheetState::expand)
                                 }
                             )
                         }
@@ -122,10 +114,10 @@ fun HomeScreen(
         floatingActionButton = {
             if (formHidden) FloatingActionButton(
                 onClick = {
-                    if (expenseState.data != null) expense.emit(ExpenseFormState())
-                    coroutineScope.launch {
-                        sheetState.expand()
-                    }
+                    if (expenseState.data != null) model.onRowClick(
+                        null,
+                        sheetState::expand
+                    )
                 },
                 content = {
                     Icon(
@@ -162,11 +154,9 @@ fun HomeScreen(
                             content = {
                                 Spacer(modifier = Modifier.height(primaryPadding()))
                                 ExpenseForm(
-                                    state = expenseState,
+                                    model = expenseState,
                                     onSaveClicked = {
-                                        coroutineScope.launch {
-                                            if (save()) dismiss()
-                                        }
+                                        model.save(dismiss)
                                     },
                                     onCancelClicked = dismiss,
                                     onDeleteClicked = {

@@ -1,7 +1,7 @@
-package dev.logickoder.expensemanager.ui.screens.shared.expense_form
+package dev.logickoder.expensemanager.app.widgets.expenseform
 
 import dev.logickoder.expensemanager.app.data.model.DataRow
-import dev.logickoder.expensemanager.app.state.FormState
+import dev.logickoder.expensemanager.app.state.FormModel
 import dev.logickoder.expensemanager.app.state.MutableObservableState
 import dev.logickoder.expensemanager.app.utils.createErrorState
 import dev.logickoder.expensemanager.app.utils.float
@@ -9,9 +9,9 @@ import dev.logickoder.expensemanager.app.utils.formatted
 import dev.logickoder.expensemanager.app.utils.toText
 import java.time.LocalDate
 
-class ExpenseFormState(
+class ExpenseFormModel(
     val data: DataRow? = null,
-) : FormState<DataRow>() {
+) : FormModel<DataRow>() {
 
     val isEdit = data != null
 
@@ -61,30 +61,35 @@ class ExpenseFormState(
         merchantError, totalError, dateError, statusError
     )
 
-    override suspend fun save(): DataRow? {
+    override fun save(): DataRow? {
         val errorMessage = "Please provide a %s"
         clearErrors()
 
         if (merchant.value == null)
             merchantError.emit(errorMessage.format("merchant"))
+
         if (total.value == null)
             totalError.emit(errorMessage.format("total"))
+
         if (date.value == null)
             dateError.emit(errorMessage.format("date"))
+
         if (status.value == null)
             statusError.emit(errorMessage.format("status"))
 
         return if (hasError()) {
             null
-        } else DataRow(
-            id = data?.id ?: 0,
-            date = date.value!!,
-            merchant = merchant.value!!,
-            total = total.value!!,
-            status = status.value!!,
-            receipt = receipt.value,
-            comment = comment.value,
-        )
+        } else {
+            DataRow(
+                id = data?.id ?: 0,
+                date = date.value!!,
+                merchant = merchant.value!!,
+                total = total.value!!,
+                status = status.value!!,
+                receipt = receipt.value,
+                comment = comment.value,
+            )
+        }
     }
 
     override fun clear() {

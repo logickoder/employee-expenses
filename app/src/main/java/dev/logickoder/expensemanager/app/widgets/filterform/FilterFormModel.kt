@@ -1,17 +1,20 @@
-package dev.logickoder.expensemanager.ui.screens.shared.filter_form
+package dev.logickoder.expensemanager.app.widgets.filterform
 
 import dev.logickoder.expensemanager.app.data.repository.DataRepository
-import dev.logickoder.expensemanager.app.state.FormState
+import dev.logickoder.expensemanager.app.state.FormModel
 import dev.logickoder.expensemanager.app.state.MutableObservableState
 import dev.logickoder.expensemanager.app.utils.float
 import dev.logickoder.expensemanager.app.utils.formatted
 import dev.logickoder.expensemanager.app.utils.toText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
-class FilterFormState(
+class FilterFormModel(
     private val repository: DataRepository,
-) : FormState<Nothing>() {
+    private val scope: CoroutineScope,
+) : FormModel<Nothing>() {
     val from = MutableObservableState<LocalDate?, LocalDate?, String>(
         initial = null,
         update = { it, _ -> it },
@@ -50,7 +53,7 @@ class FilterFormState(
         output = { it ?: "" }
     )
 
-    override suspend fun save(): Nothing? {
+    override fun save(): Nothing? {
         val query = StringBuilder(DataRepository.startingQuery)
         val startTime = from.value?.toEpochDay() ?: Long.MIN_VALUE
         val endTime = to.value?.toEpochDay() ?: Long.MAX_VALUE
@@ -60,7 +63,9 @@ class FilterFormState(
         query.append(" AND total BETWEEN $minAmount AND $maxAmount")
         merchant.value?.let { query.append(" AND merchant = '$it'") }
         status.value?.let { query.append(" AND status = '$it'") }
-        repository.query(query.toString())
+        scope.launch {
+            repository.query(query.toString())
+        }
         return null
     }
 

@@ -1,4 +1,4 @@
-package dev.logickoder.expensemanager.ui.screens.shared.filter_form
+package dev.logickoder.expensemanager.app.widgets.filterform
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.HoverInteraction
@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -38,16 +37,15 @@ import dev.logickoder.expensemanager.ui.screens.shared.input.DefaultInputColor
 import dev.logickoder.expensemanager.ui.screens.shared.input.Input
 import dev.logickoder.expensemanager.ui.screens.shared.input.InputField
 import dev.logickoder.expensemanager.ui.screens.shared.input.InputState
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterForm(
-    state: FilterFormState,
+    model: FilterFormModel,
     modifier: Modifier = Modifier,
     hideForm: () -> Unit,
     sectionSpacing: Dp = secondaryPadding()
-) = with(state) {
+) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(
@@ -57,13 +55,13 @@ fun FilterForm(
         content = {
             DatePicker(
                 title = stringResource(id = R.string.from),
-                state = InputState(from.collectAsState().value),
-                onDateChange = from::emit,
+                state = InputState(model.from.collectAsState().value),
+                onDateChange = model.from::emit,
             )
             DatePicker(
                 title = stringResource(id = R.string.to),
-                state = InputState(to.collectAsState().value),
-                onDateChange = to::emit,
+                state = InputState(model.to.collectAsState().value),
+                onDateChange = model.to::emit,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -75,8 +73,8 @@ fun FilterForm(
                         modifier = Modifier.weight(0.45f),
                         title = stringResource(id = R.string.min),
                         state = InputState(
-                            value = min.collectAsState().value,
-                            onValueChanged = min::emit,
+                            value = model.min.collectAsState().value,
+                            onValueChanged = model.min::emit,
                             icon = textIcon,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
@@ -87,8 +85,8 @@ fun FilterForm(
                         modifier = Modifier.weight(0.45f),
                         title = stringResource(id = R.string.max),
                         state = InputState(
-                            value = max.collectAsState().value,
-                            onValueChanged = max::emit,
+                            value = model.max.collectAsState().value,
+                            onValueChanged = model.max::emit,
                             icon = textIcon,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
@@ -100,14 +98,14 @@ fun FilterForm(
             Input(
                 title = stringResource(id = R.string.merchant),
                 state = InputState(
-                    value = merchant.collectAsState().value,
+                    value = model.merchant.collectAsState().value,
                     readOnly = true,
                 ),
                 content = { interactionSource, state ->
                     DropdownField(
                         suggested = state.value,
                         suggestions = stringArrayResource(id = R.array.merchants).toList(),
-                        onSuggestionSelected = merchant::emit,
+                        onSuggestionSelected = model.merchant::emit,
                         dropdownField = { _, expanded ->
                             InputField(
                                 modifier = Modifier.menuAnchor(),
@@ -124,7 +122,7 @@ fun FilterForm(
             )
             Input(
                 title = stringResource(id = R.string.status),
-                state = InputState(status.collectAsState().value),
+                state = InputState(model.status.collectAsState().value),
                 content = { interactionSource, state ->
                     val statuses = stringArrayResource(id = R.array.statuses).toList()
                     statuses.chunked(2).forEach { row ->
@@ -144,7 +142,7 @@ fun FilterForm(
                                             CheckboxItem(
                                                 checked = state.value == item,
                                                 onCheckedChange = { isChecked ->
-                                                    status.emit(isChecked to item)
+                                                    model.status.emit(isChecked to item)
                                                 },
                                                 text = {
                                                     Text(item)
@@ -158,7 +156,6 @@ fun FilterForm(
                     }
                 }
             )
-            val coroutineScope = rememberCoroutineScope()
             Row(
                 horizontalArrangement = Arrangement.spacedBy(secondaryPadding()),
                 content = {
@@ -168,10 +165,8 @@ fun FilterForm(
                             Text(stringResource(id = R.string.filter))
                         },
                         onClick = {
-                            coroutineScope.launch {
-                                save()
-                                hideForm()
-                            }
+                            model.save()
+                            hideForm()
                         },
                     )
                     TextButton(
@@ -179,11 +174,9 @@ fun FilterForm(
                             Text(stringResource(id = R.string.clear))
                         },
                         onClick = {
-                            coroutineScope.launch {
-                                clear()
-                                save()
-                                hideForm()
-                            }
+                            model.clear()
+                            model.save()
+                            hideForm()
                         },
                         colors = ButtonDefaults.textButtonColors(
                             containerColor = DefaultInputColor.copy(0.05f),

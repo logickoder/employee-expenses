@@ -2,23 +2,30 @@ package dev.logickoder.expensemanager
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.navigation.compose.rememberNavController
-import dev.logickoder.expensemanager.app.NavGraph
+import com.bumble.appyx.core.integration.NodeHost
+import com.bumble.appyx.core.integrationpoint.NodeActivity
+import dev.logickoder.expensemanager.app.Navigation
 import dev.logickoder.expensemanager.app.theme.ExpenseManagerTheme
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : NodeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ExpenseManagerTheme {
-                val navController = rememberNavController()
                 Surface(
                     color = MaterialTheme.colorScheme.background,
                     content = {
-                        NavGraph(navController = navController)
+                        NodeHost(
+                            integrationPoint = appyxIntegrationPoint,
+                            factory = {
+                                Navigation(
+                                    buildContext = it,
+                                    startingRoute = Navigation.Route.Login,
+                                )
+                            }
+                        )
                     }
                 )
             }

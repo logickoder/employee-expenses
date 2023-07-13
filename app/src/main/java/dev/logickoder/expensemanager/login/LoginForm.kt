@@ -1,4 +1,4 @@
-package dev.logickoder.expensemanager.ui.screens.login
+package dev.logickoder.expensemanager.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,9 +18,9 @@ import dev.logickoder.expensemanager.ui.screens.shared.input.InputState
 
 @Composable
 fun LoginForm(
+    model: LoginScreenModel,
     modifier: Modifier = Modifier,
-    state: LoginState,
-) = with(state) {
+) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(
@@ -30,17 +30,17 @@ fun LoginForm(
             Input(
                 title = stringResource(id = R.string.username),
                 state = InputState(
-                    value = username.collectAsState().value,
+                    value = model.username.collectAsState().value,
                     color = Color.White,
-                    onValueChanged = username::emit
+                    onValueChanged = model.username::emit
                 ),
             )
             Input(
                 title = stringResource(id = R.string.password),
                 state = InputState(
-                    value = password.collectAsState().value,
+                    value = model.password.collectAsState().value,
                     color = Color.White,
-                    onValueChanged = password::emit,
+                    onValueChanged = model.password::emit,
                     visualTransformation = PasswordVisualTransformation(),
                     icon = Alignment.End to Icons.Outlined.RemoveRedEye,
                 )

@@ -1,4 +1,4 @@
-package dev.logickoder.expensemanager.ui.screens.shared.expense_form
+package dev.logickoder.expensemanager.app.widgets.expenseform
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.HoverInteraction
@@ -44,12 +44,12 @@ import dev.logickoder.expensemanager.ui.screens.shared.input.InputState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseForm(
-    state: ExpenseFormState,
+    model: ExpenseFormModel,
     onSaveClicked: () -> Unit,
     onCancelClicked: () -> Unit,
     modifier: Modifier = Modifier,
     onDeleteClicked: () -> Unit = {},
-) = with(state) {
+) {
 
     Column(
         modifier = modifier,
@@ -61,16 +61,16 @@ fun ExpenseForm(
             Input(
                 title = stringResource(id = R.string.merchant),
                 state = InputState(
-                    value = merchant.collectAsState().value,
+                    value = model.merchant.collectAsState().value,
                     readOnly = true,
                     required = true,
-                    error = merchantError.collectAsState().value,
+                    error = model.merchantError.collectAsState().value,
                 ),
                 content = { interactionSource, state ->
                     DropdownField(
                         suggested = state.value,
                         suggestions = stringArrayResource(id = R.array.merchants).toList(),
-                        onSuggestionSelected = merchant::emit,
+                        onSuggestionSelected = model.merchant::emit,
                         dropdownField = { _, expanded ->
                             InputField(
                                 modifier = Modifier.menuAnchor(),
@@ -88,10 +88,10 @@ fun ExpenseForm(
             Input(
                 title = stringResource(id = R.string.total),
                 state = InputState(
-                    value = total.collectAsState().value,
-                    onValueChanged = total::emit,
+                    value = model.total.collectAsState().value,
+                    onValueChanged = model.total::emit,
                     icon = Alignment.Start to Icons.Outlined.AttachMoney,
-                    error = totalError.collectAsState().value,
+                    error = model.totalError.collectAsState().value,
                     required = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
@@ -101,17 +101,17 @@ fun ExpenseForm(
             DatePicker(
                 title = stringResource(id = R.string.date),
                 state = InputState(
-                    value = date.collectAsState().value,
-                    error = dateError.collectAsState().value,
+                    value = model.date.collectAsState().value,
+                    error = model.dateError.collectAsState().value,
                     required = true,
                 ),
-                onDateChange = date::emit,
+                onDateChange = model.date::emit,
             )
             Input(
                 title = stringResource(id = R.string.comment),
                 state = InputState(
-                    value = comment.collectAsState().value,
-                    onValueChanged = comment::emit
+                    value = model.comment.collectAsState().value,
+                    onValueChanged = model.comment::emit
                 ),
                 content = { interactionSource, state ->
                     InputField(
@@ -123,7 +123,7 @@ fun ExpenseForm(
             )
             Input(
                 title = stringResource(id = R.string.status),
-                state = InputState(status.collectAsState().value ?: ""),
+                state = InputState(model.status.collectAsState().value.orEmpty()),
                 content = { interactionSource, state ->
                     val statuses = stringArrayResource(id = R.array.statuses).toList()
                     Column(
@@ -145,7 +145,7 @@ fun ExpenseForm(
                                             CheckboxItem(
                                                 checked = state.value == item,
                                                 onCheckedChange = { isChecked ->
-                                                    status.emit(isChecked to item)
+                                                    model.status.emit(isChecked to item)
                                                 },
                                                 text = {
                                                     Text(item)
@@ -155,7 +155,7 @@ fun ExpenseForm(
                                     }
                                 )
                             }
-                            statusError.collectAsState().value?.let {
+                            model.statusError.collectAsState().value?.let {
                                 ErrorText(error = it)
                             }
                         }
@@ -164,7 +164,7 @@ fun ExpenseForm(
             )
             ImageSelect(
                 onImageSelected = {
-                    receipt.emit(it)
+                    model.receipt.emit(it)
                 },
                 content = {
 
@@ -180,7 +180,7 @@ fun ExpenseForm(
                 }
             )
             Avatar(
-                model = receipt.collectAsState().value,
+                model = model.receipt.collectAsState().value,
                 shape = RoundedCornerShape(secondaryPadding()),
                 size = 1f,
             )
@@ -203,7 +203,7 @@ fun ExpenseForm(
                         ),
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    if (!state.isEdit) TextButton(
+                    if (!model.isEdit) TextButton(
                         content = {
                             Text(stringResource(id = R.string.delete))
                         },

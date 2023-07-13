@@ -1,4 +1,4 @@
-package dev.logickoder.expensemanager.ui.screens.profile
+package dev.logickoder.expensemanager.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import dev.logickoder.expensemanager.R
@@ -37,15 +38,17 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-    state: ProfileState,
+    model: ProfileScreenModel,
     goBack: () -> Unit,
     logout: () -> Unit,
     modifier: Modifier = Modifier,
     sectionSpacing: Dp = secondaryPadding(),
-) = with(state) {
+) {
 
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
         modifier = modifier,
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -76,11 +79,11 @@ fun ProfileScreen(
                 content = {
                     ImageSelect(
                         onImageSelected = {
-                            avatar.emit(it)
+                            model.avatar.emit(it)
                         },
                         content = {
                             Avatar(
-                                model = avatar.collectAsState().value,
+                                model = model.avatar.collectAsState().value,
                                 placeholder = rememberVectorPainter(Icons.Outlined.Person),
                                 onClick = it
                             )
@@ -89,36 +92,36 @@ fun ProfileScreen(
                     Input(
                         title = stringResource(id = R.string.name),
                         state = InputState(
-                            value = name.collectAsState().value,
-                            error = nameError.collectAsState().value,
-                            onValueChanged = name::emit,
+                            value = model.name.collectAsState().value,
+                            error = model.nameError.collectAsState().value,
+                            onValueChanged = model.name::emit,
                             required = true,
                         )
                     )
                     Input(
                         title = stringResource(id = R.string.job_description),
                         state = InputState(
-                            value = jobDescription.collectAsState().value,
-                            error = jobDescriptionError.collectAsState().value,
-                            onValueChanged = jobDescription::emit,
+                            value = model.jobDescription.collectAsState().value,
+                            error = model.jobDescriptionError.collectAsState().value,
+                            onValueChanged = model.jobDescription::emit,
                             required = true,
                         )
                     )
                     Input(
                         title = stringResource(id = R.string.department),
                         state = InputState(
-                            value = department.collectAsState().value,
-                            error = departmentError.collectAsState().value,
-                            onValueChanged = department::emit,
+                            value = model.department.collectAsState().value,
+                            error = model.departmentError.collectAsState().value,
+                            onValueChanged = model.department::emit,
                             required = true,
                         )
                     )
                     Input(
                         title = stringResource(id = R.string.location),
                         state = InputState(
-                            value = location.collectAsState().value,
-                            error = locationError.collectAsState().value,
-                            onValueChanged = location::emit,
+                            value = model.location.collectAsState().value,
+                            error = model.locationError.collectAsState().value,
+                            onValueChanged = model.location::emit,
                             required = true,
                         )
                     )
@@ -131,10 +134,10 @@ fun ProfileScreen(
                             Text(stringResource(id = R.string.save).uppercase())
                         },
                         onClick = {
-                            coroutineScope.launch {
-                                if (save() != null) {
+                            if (model.save() != null) {
+                                coroutineScope.launch {
                                     snackbarHostState.showSnackbar(
-                                        "Profile updated successfully"
+                                        message = context.getString(R.string.profile_updated)
                                     )
                                 }
                             }

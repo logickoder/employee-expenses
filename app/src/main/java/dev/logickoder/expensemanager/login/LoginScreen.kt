@@ -1,4 +1,4 @@
-package dev.logickoder.expensemanager.ui.screens.login
+package dev.logickoder.expensemanager.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,8 +21,8 @@ import dev.logickoder.expensemanager.R
 
 @Composable
 fun LoginScreen(
+    model: LoginScreenModel,
     modifier: Modifier = Modifier,
-    state: LoginState,
     navigateToNextScreen: () -> Unit,
     contentPadding: Dp = dimensionResource(id = R.dimen.padding),
 ) {
@@ -51,7 +51,7 @@ fun LoginScreen(
                 thickness = 4.dp,
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             )
-            LoginForm(state = state)
+            LoginForm(model = model)
             Button(
                 onClick = navigateToNextScreen,
                 content = {

@@ -2,6 +2,7 @@
 plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
 }
@@ -65,6 +66,9 @@ dependencies {
     // for using some java 8 classes like LocalDate with older versions of android
     coreLibraryDesugaring(libs.core.java8)
 
+    // Appyx
+    implementation(libs.appyx)
+
     // Core
     implementation(libs.core)
     implementation(libs.core.appcompat)
@@ -86,7 +90,6 @@ dependencies {
     debugImplementation(libs.compose.custom.view.pooling)
     implementation(libs.compose.material)
     implementation(libs.compose.material.icons)
-    implementation(libs.compose.navigation)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
@@ -121,10 +124,6 @@ dependencies {
     implementation(libs.room)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
-
-    // Voyager
-    implementation(libs.voyager)
-    implementation(libs.voyager.android)
 
     testImplementation(libs.junit)
     testImplementation(libs.junit.engine)

@@ -30,11 +30,13 @@
     <string name="add_expense">Add Expense</string>
     <string name="edit_expense">Edit Expense</string>
 
+    <!-- Profile -->
     <string name="profile">Profile</string>
     <string name="name">Name</string>
     <string name="job_description">Job Description</string>
     <string name="department">Department</string>
     <string name="location">Location</string>
+    <string name="profile_updated">Profile Updated Successfully</string>
 
     <!-- Permissions -->
     <string name="decline">Decline</string>

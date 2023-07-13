@@ -1,4 +1,4 @@
-package dev.logickoder.expensemanager.ui.screens.home
+package dev.logickoder.expensemanager.home
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -25,15 +25,15 @@ import androidx.compose.ui.unit.dp
 import dev.logickoder.expensemanager.R
 import dev.logickoder.expensemanager.app.utils.collectAsState
 import dev.logickoder.expensemanager.app.utils.currency
-import dev.logickoder.expensemanager.ui.screens.shared.filter_form.FilterForm
-import dev.logickoder.expensemanager.ui.screens.shared.filter_form.FilterFormState
+import dev.logickoder.expensemanager.app.widgets.filterform.FilterForm
+import dev.logickoder.expensemanager.app.widgets.filterform.FilterFormModel
 
 
 @Composable
 fun HomeHeader(
     filterFormHidden: Boolean,
     reimbursed: Float,
-    filterFormState: FilterFormState,
+    filterFormModel: FilterFormModel,
     changeFilterFormHidden: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -69,12 +69,12 @@ fun HomeHeader(
                                             )
                                         },
                                     )
-                                    val from by filterFormState.from.collectAsState()
-                                    val to by filterFormState.to.collectAsState()
-                                    val max by filterFormState.max.collectAsState()
-                                    val min by filterFormState.min.collectAsState()
-                                    val merchant by filterFormState.merchant.collectAsState()
-                                    val status by filterFormState.status.collectAsState()
+                                    val from by filterFormModel.from.collectAsState()
+                                    val to by filterFormModel.to.collectAsState()
+                                    val max by filterFormModel.max.collectAsState()
+                                    val min by filterFormModel.min.collectAsState()
+                                    val merchant by filterFormModel.merchant.collectAsState()
+                                    val status by filterFormModel.status.collectAsState()
                                     val count = listOf(from, to, max, min, merchant, status)
                                         .count { it.isNotBlank() }
 
@@ -100,7 +100,7 @@ fun HomeHeader(
                 modifier = Modifier.animateContentSize(),
                 content = {
                     if (!filterFormHidden) FilterForm(
-                        state = filterFormState,
+                        model = filterFormModel,
                         hideForm = {
                             changeFilterFormHidden(true)
                         }
